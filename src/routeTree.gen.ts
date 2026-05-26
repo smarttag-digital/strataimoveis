@@ -9,38 +9,252 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SobreRouteImport } from './routes/sobre'
+import { Route as ImoveisRouteImport } from './routes/imoveis'
+import { Route as EmpreendimentosRouteImport } from './routes/empreendimentos'
+import { Route as ContatoRouteImport } from './routes/contato'
+import { Route as BlogRouteImport } from './routes/blog'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as ImoveisSlugRouteImport } from './routes/imoveis.$slug'
+import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
+import { Route as AdminImoveisRouteImport } from './routes/admin.imoveis'
+import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
+import { Route as AdminBlogRouteImport } from './routes/admin.blog'
 
+const SobreRoute = SobreRouteImport.update({
+  id: '/sobre',
+  path: '/sobre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImoveisRoute = ImoveisRouteImport.update({
+  id: '/imoveis',
+  path: '/imoveis',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmpreendimentosRoute = EmpreendimentosRouteImport.update({
+  id: '/empreendimentos',
+  path: '/empreendimentos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContatoRoute = ContatoRouteImport.update({
+  id: '/contato',
+  path: '/contato',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const ImoveisSlugRoute = ImoveisSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => ImoveisRoute,
+} as any)
+const AdminLeadsRoute = AdminLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminImoveisRoute = AdminImoveisRouteImport.update({
+  id: '/imoveis',
+  path: '/imoveis',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminConfiguracoesRoute = AdminConfiguracoesRouteImport.update({
+  id: '/configuracoes',
+  path: '/configuracoes',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBlogRoute = AdminBlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/blog': typeof BlogRoute
+  '/contato': typeof ContatoRoute
+  '/empreendimentos': typeof EmpreendimentosRoute
+  '/imoveis': typeof ImoveisRouteWithChildren
+  '/sobre': typeof SobreRoute
+  '/admin/blog': typeof AdminBlogRoute
+  '/admin/configuracoes': typeof AdminConfiguracoesRoute
+  '/admin/imoveis': typeof AdminImoveisRoute
+  '/admin/leads': typeof AdminLeadsRoute
+  '/imoveis/$slug': typeof ImoveisSlugRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/blog': typeof BlogRoute
+  '/contato': typeof ContatoRoute
+  '/empreendimentos': typeof EmpreendimentosRoute
+  '/imoveis': typeof ImoveisRouteWithChildren
+  '/sobre': typeof SobreRoute
+  '/admin/blog': typeof AdminBlogRoute
+  '/admin/configuracoes': typeof AdminConfiguracoesRoute
+  '/admin/imoveis': typeof AdminImoveisRoute
+  '/admin/leads': typeof AdminLeadsRoute
+  '/imoveis/$slug': typeof ImoveisSlugRoute
+  '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/blog': typeof BlogRoute
+  '/contato': typeof ContatoRoute
+  '/empreendimentos': typeof EmpreendimentosRoute
+  '/imoveis': typeof ImoveisRouteWithChildren
+  '/sobre': typeof SobreRoute
+  '/admin/blog': typeof AdminBlogRoute
+  '/admin/configuracoes': typeof AdminConfiguracoesRoute
+  '/admin/imoveis': typeof AdminImoveisRoute
+  '/admin/leads': typeof AdminLeadsRoute
+  '/imoveis/$slug': typeof ImoveisSlugRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/auth'
+    | '/blog'
+    | '/contato'
+    | '/empreendimentos'
+    | '/imoveis'
+    | '/sobre'
+    | '/admin/blog'
+    | '/admin/configuracoes'
+    | '/admin/imoveis'
+    | '/admin/leads'
+    | '/imoveis/$slug'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/blog'
+    | '/contato'
+    | '/empreendimentos'
+    | '/imoveis'
+    | '/sobre'
+    | '/admin/blog'
+    | '/admin/configuracoes'
+    | '/admin/imoveis'
+    | '/admin/leads'
+    | '/imoveis/$slug'
+    | '/admin'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/auth'
+    | '/blog'
+    | '/contato'
+    | '/empreendimentos'
+    | '/imoveis'
+    | '/sobre'
+    | '/admin/blog'
+    | '/admin/configuracoes'
+    | '/admin/imoveis'
+    | '/admin/leads'
+    | '/imoveis/$slug'
+    | '/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  BlogRoute: typeof BlogRoute
+  ContatoRoute: typeof ContatoRoute
+  EmpreendimentosRoute: typeof EmpreendimentosRoute
+  ImoveisRoute: typeof ImoveisRouteWithChildren
+  SobreRoute: typeof SobreRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sobre': {
+      id: '/sobre'
+      path: '/sobre'
+      fullPath: '/sobre'
+      preLoaderRoute: typeof SobreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/imoveis': {
+      id: '/imoveis'
+      path: '/imoveis'
+      fullPath: '/imoveis'
+      preLoaderRoute: typeof ImoveisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/empreendimentos': {
+      id: '/empreendimentos'
+      path: '/empreendimentos'
+      fullPath: '/empreendimentos'
+      preLoaderRoute: typeof EmpreendimentosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contato': {
+      id: '/contato'
+      path: '/contato'
+      fullPath: '/contato'
+      preLoaderRoute: typeof ContatoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +262,89 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/imoveis/$slug': {
+      id: '/imoveis/$slug'
+      path: '/$slug'
+      fullPath: '/imoveis/$slug'
+      preLoaderRoute: typeof ImoveisSlugRouteImport
+      parentRoute: typeof ImoveisRoute
+    }
+    '/admin/leads': {
+      id: '/admin/leads'
+      path: '/leads'
+      fullPath: '/admin/leads'
+      preLoaderRoute: typeof AdminLeadsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/imoveis': {
+      id: '/admin/imoveis'
+      path: '/imoveis'
+      fullPath: '/admin/imoveis'
+      preLoaderRoute: typeof AdminImoveisRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/configuracoes': {
+      id: '/admin/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/admin/configuracoes'
+      preLoaderRoute: typeof AdminConfiguracoesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/blog': {
+      id: '/admin/blog'
+      path: '/blog'
+      fullPath: '/admin/blog'
+      preLoaderRoute: typeof AdminBlogRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
+interface AdminRouteChildren {
+  AdminBlogRoute: typeof AdminBlogRoute
+  AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
+  AdminImoveisRoute: typeof AdminImoveisRoute
+  AdminLeadsRoute: typeof AdminLeadsRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminBlogRoute: AdminBlogRoute,
+  AdminConfiguracoesRoute: AdminConfiguracoesRoute,
+  AdminImoveisRoute: AdminImoveisRoute,
+  AdminLeadsRoute: AdminLeadsRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
+interface ImoveisRouteChildren {
+  ImoveisSlugRoute: typeof ImoveisSlugRoute
+}
+
+const ImoveisRouteChildren: ImoveisRouteChildren = {
+  ImoveisSlugRoute: ImoveisSlugRoute,
+}
+
+const ImoveisRouteWithChildren =
+  ImoveisRoute._addFileChildren(ImoveisRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
+  AuthRoute: AuthRoute,
+  BlogRoute: BlogRoute,
+  ContatoRoute: ContatoRoute,
+  EmpreendimentosRoute: EmpreendimentosRoute,
+  ImoveisRoute: ImoveisRouteWithChildren,
+  SobreRoute: SobreRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
