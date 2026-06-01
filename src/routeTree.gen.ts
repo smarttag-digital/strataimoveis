@@ -24,6 +24,8 @@ import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminImoveisRouteImport } from './routes/admin.imoveis'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
 import { Route as AdminBlogRouteImport } from './routes/admin.blog'
+import { Route as AdminImoveisNovoRouteImport } from './routes/admin.imoveis.novo'
+import { Route as AdminImoveisIdEditarRouteImport } from './routes/admin.imoveis.$id.editar'
 
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
@@ -100,6 +102,16 @@ const AdminBlogRoute = AdminBlogRouteImport.update({
   path: '/blog',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminImoveisNovoRoute = AdminImoveisNovoRouteImport.update({
+  id: '/novo',
+  path: '/novo',
+  getParentRoute: () => AdminImoveisRoute,
+} as any)
+const AdminImoveisIdEditarRoute = AdminImoveisIdEditarRouteImport.update({
+  id: '/$id/editar',
+  path: '/$id/editar',
+  getParentRoute: () => AdminImoveisRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -112,11 +124,13 @@ export interface FileRoutesByFullPath {
   '/sobre': typeof SobreRoute
   '/admin/blog': typeof AdminBlogRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
-  '/admin/imoveis': typeof AdminImoveisRoute
+  '/admin/imoveis': typeof AdminImoveisRouteWithChildren
   '/admin/leads': typeof AdminLeadsRoute
   '/imoveis/$slug': typeof ImoveisSlugRoute
   '/imovel/$ref': typeof ImovelRefRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/imoveis/novo': typeof AdminImoveisNovoRoute
+  '/admin/imoveis/$id/editar': typeof AdminImoveisIdEditarRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -128,11 +142,13 @@ export interface FileRoutesByTo {
   '/sobre': typeof SobreRoute
   '/admin/blog': typeof AdminBlogRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
-  '/admin/imoveis': typeof AdminImoveisRoute
+  '/admin/imoveis': typeof AdminImoveisRouteWithChildren
   '/admin/leads': typeof AdminLeadsRoute
   '/imoveis/$slug': typeof ImoveisSlugRoute
   '/imovel/$ref': typeof ImovelRefRoute
   '/admin': typeof AdminIndexRoute
+  '/admin/imoveis/novo': typeof AdminImoveisNovoRoute
+  '/admin/imoveis/$id/editar': typeof AdminImoveisIdEditarRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -146,11 +162,13 @@ export interface FileRoutesById {
   '/sobre': typeof SobreRoute
   '/admin/blog': typeof AdminBlogRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
-  '/admin/imoveis': typeof AdminImoveisRoute
+  '/admin/imoveis': typeof AdminImoveisRouteWithChildren
   '/admin/leads': typeof AdminLeadsRoute
   '/imoveis/$slug': typeof ImoveisSlugRoute
   '/imovel/$ref': typeof ImovelRefRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/imoveis/novo': typeof AdminImoveisNovoRoute
+  '/admin/imoveis/$id/editar': typeof AdminImoveisIdEditarRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -170,6 +188,8 @@ export interface FileRouteTypes {
     | '/imoveis/$slug'
     | '/imovel/$ref'
     | '/admin/'
+    | '/admin/imoveis/novo'
+    | '/admin/imoveis/$id/editar'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -186,6 +206,8 @@ export interface FileRouteTypes {
     | '/imoveis/$slug'
     | '/imovel/$ref'
     | '/admin'
+    | '/admin/imoveis/novo'
+    | '/admin/imoveis/$id/editar'
   id:
     | '__root__'
     | '/'
@@ -203,6 +225,8 @@ export interface FileRouteTypes {
     | '/imoveis/$slug'
     | '/imovel/$ref'
     | '/admin/'
+    | '/admin/imoveis/novo'
+    | '/admin/imoveis/$id/editar'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -324,13 +348,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBlogRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/imoveis/novo': {
+      id: '/admin/imoveis/novo'
+      path: '/novo'
+      fullPath: '/admin/imoveis/novo'
+      preLoaderRoute: typeof AdminImoveisNovoRouteImport
+      parentRoute: typeof AdminImoveisRoute
+    }
+    '/admin/imoveis/$id/editar': {
+      id: '/admin/imoveis/$id/editar'
+      path: '/$id/editar'
+      fullPath: '/admin/imoveis/$id/editar'
+      preLoaderRoute: typeof AdminImoveisIdEditarRouteImport
+      parentRoute: typeof AdminImoveisRoute
+    }
   }
 }
+
+interface AdminImoveisRouteChildren {
+  AdminImoveisNovoRoute: typeof AdminImoveisNovoRoute
+  AdminImoveisIdEditarRoute: typeof AdminImoveisIdEditarRoute
+}
+
+const AdminImoveisRouteChildren: AdminImoveisRouteChildren = {
+  AdminImoveisNovoRoute: AdminImoveisNovoRoute,
+  AdminImoveisIdEditarRoute: AdminImoveisIdEditarRoute,
+}
+
+const AdminImoveisRouteWithChildren = AdminImoveisRoute._addFileChildren(
+  AdminImoveisRouteChildren,
+)
 
 interface AdminRouteChildren {
   AdminBlogRoute: typeof AdminBlogRoute
   AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
-  AdminImoveisRoute: typeof AdminImoveisRoute
+  AdminImoveisRoute: typeof AdminImoveisRouteWithChildren
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -338,7 +390,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminBlogRoute: AdminBlogRoute,
   AdminConfiguracoesRoute: AdminConfiguracoesRoute,
-  AdminImoveisRoute: AdminImoveisRoute,
+  AdminImoveisRoute: AdminImoveisRouteWithChildren,
   AdminLeadsRoute: AdminLeadsRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
@@ -370,3 +422,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
