@@ -173,6 +173,7 @@ export type Database = {
           price: number | null
           property_type: string
           published: boolean
+          reference: string | null
           slug: string
           title: string
           transaction_type: string
@@ -202,6 +203,7 @@ export type Database = {
           price?: number | null
           property_type: string
           published?: boolean
+          reference?: string | null
           slug: string
           title: string
           transaction_type?: string
@@ -231,6 +233,7 @@ export type Database = {
           price?: number | null
           property_type?: string
           published?: boolean
+          reference?: string | null
           slug?: string
           title?: string
           transaction_type?: string
@@ -290,6 +293,8 @@ export type Database = {
         }
         Returns: boolean
       }
+      slugify: { Args: { v: string }; Returns: string }
+      unaccent: { Args: { "": string }; Returns: string }
     }
     Enums: {
       app_role: "admin" | "user"
