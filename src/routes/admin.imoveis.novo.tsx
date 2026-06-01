@@ -12,6 +12,7 @@ function NovoImovel() {
 
   async function handleSubmit(v: PropertyFormValues) {
     const payload = {
+      slug: "", // trigger will generate from title
       title: v.title,
       description: v.description || null,
       property_type: v.property_type,
