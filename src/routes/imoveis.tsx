@@ -3,11 +3,13 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { SearchBar } from "@/components/site/SearchBar";
 import { PropertyCard, type PropertyCardData } from "@/components/site/PropertyCard";
 import { PROPERTY_TYPES } from "@/lib/site";
 import { Search } from "lucide-react";
 
 type Filters = {
+  transaction: string;
   type: string;
   city: string;
   neighborhood: string;
@@ -19,15 +21,25 @@ type Filters = {
 };
 
 const empty: Filters = {
-  type: "", city: "", neighborhood: "", minPrice: "", maxPrice: "",
+  transaction: "", type: "", city: "", neighborhood: "", minPrice: "", maxPrice: "",
   bedrooms: "", bathrooms: "", parking: "",
 };
 
 export const Route = createFileRoute("/imoveis")({
   validateSearch: (s: Record<string, unknown>): Partial<Filters> => ({
+    transaction: (s.transaction as string) || "",
     type: (s.type as string) || "",
     city: (s.city as string) || "",
+    neighborhood: (s.neighborhood as string) || "",
+    minPrice: (s.minPrice as string) || "",
+    maxPrice: (s.maxPrice as string) || "",
     bedrooms: (s.bedrooms as string) || "",
+  }),
+  head: () => ({
+    meta: [
+      { title: "Imóveis à venda e para alugar em Tatuí — Letícia Souza Imóveis" },
+      { name: "description", content: "Busque casas, apartamentos, terrenos e condomínios em Tatuí e região. Filtros por valor, bairro, dormitórios e mais." },
+    ],
   }),
   component: ImoveisPage,
 });
@@ -43,6 +55,7 @@ function ImoveisPage() {
         .from("properties")
         .select("id,slug,title,city,neighborhood,price,bedrooms,bathrooms,parking_spaces,built_area,cover_image,is_featured,is_new,is_opportunity,is_launch")
         .eq("published", true);
+      if (filters.transaction) q = q.eq("transaction_type", filters.transaction);
       if (filters.type) q = q.eq("property_type", filters.type);
       if (filters.city) q = q.ilike("city", `%${filters.city}%`);
       if (filters.neighborhood) q = q.ilike("neighborhood", `%${filters.neighborhood}%`);
@@ -68,13 +81,23 @@ function ImoveisPage() {
         <div className="container-prose">
           <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Busca de imóveis</p>
           <h1 className="mt-2 text-3xl font-bold md:text-4xl">Encontre seu próximo lar ou investimento</h1>
+          <div className="mt-6">
+            <SearchBar variant="inline" initial={initial} />
+          </div>
         </div>
       </section>
 
-      <section className="container-prose -mt-8 grid gap-6 py-8 lg:grid-cols-[300px_1fr]">
+      <section className="container-prose grid gap-6 py-8 lg:grid-cols-[280px_1fr]">
         <aside className="self-start rounded-lg border border-border bg-card p-5">
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider">Filtros</h2>
+          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider">Refinar busca</h2>
           <div className="space-y-3">
+            <Field label="Negócio">
+              <select value={filters.transaction} onChange={(e) => update("transaction", e.target.value)} className="input">
+                <option value="">Todos</option>
+                <option value="venda">Comprar</option>
+                <option value="aluguel">Alugar</option>
+              </select>
+            </Field>
             <Field label="Tipo">
               <select value={filters.type} onChange={(e) => update("type", e.target.value)} className="input">
                 <option value="">Todos</option>
