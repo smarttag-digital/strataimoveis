@@ -18,6 +18,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as ImovelRefRouteImport } from './routes/imovel.$ref'
 import { Route as ImoveisSlugRouteImport } from './routes/imoveis.$slug'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminImoveisRouteImport } from './routes/admin.imoveis'
@@ -69,6 +70,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const ImovelRefRoute = ImovelRefRouteImport.update({
+  id: '/imovel/$ref',
+  path: '/imovel/$ref',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImoveisSlugRoute = ImoveisSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/admin/imoveis': typeof AdminImoveisRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/imoveis/$slug': typeof ImoveisSlugRoute
+  '/imovel/$ref': typeof ImovelRefRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
@@ -124,6 +131,7 @@ export interface FileRoutesByTo {
   '/admin/imoveis': typeof AdminImoveisRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/imoveis/$slug': typeof ImoveisSlugRoute
+  '/imovel/$ref': typeof ImovelRefRoute
   '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
@@ -141,6 +149,7 @@ export interface FileRoutesById {
   '/admin/imoveis': typeof AdminImoveisRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/imoveis/$slug': typeof ImoveisSlugRoute
+  '/imovel/$ref': typeof ImovelRefRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -159,6 +168,7 @@ export interface FileRouteTypes {
     | '/admin/imoveis'
     | '/admin/leads'
     | '/imoveis/$slug'
+    | '/imovel/$ref'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -174,6 +184,7 @@ export interface FileRouteTypes {
     | '/admin/imoveis'
     | '/admin/leads'
     | '/imoveis/$slug'
+    | '/imovel/$ref'
     | '/admin'
   id:
     | '__root__'
@@ -190,6 +201,7 @@ export interface FileRouteTypes {
     | '/admin/imoveis'
     | '/admin/leads'
     | '/imoveis/$slug'
+    | '/imovel/$ref'
     | '/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -202,6 +214,7 @@ export interface RootRouteChildren {
   EmpreendimentosRoute: typeof EmpreendimentosRoute
   ImoveisRoute: typeof ImoveisRouteWithChildren
   SobreRoute: typeof SobreRoute
+  ImovelRefRoute: typeof ImovelRefRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -268,6 +281,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/imovel/$ref': {
+      id: '/imovel/$ref'
+      path: '/imovel/$ref'
+      fullPath: '/imovel/$ref'
+      preLoaderRoute: typeof ImovelRefRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/imoveis/$slug': {
       id: '/imoveis/$slug'
@@ -345,7 +365,18 @@ const rootRouteChildren: RootRouteChildren = {
   EmpreendimentosRoute: EmpreendimentosRoute,
   ImoveisRoute: ImoveisRouteWithChildren,
   SobreRoute: SobreRoute,
+  ImovelRefRoute: ImovelRefRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
