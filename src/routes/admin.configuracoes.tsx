@@ -11,9 +11,13 @@ export const Route = createFileRoute("/admin/configuracoes")({
 
 type Contact = { phone: string; whatsapp: string; email: string; creci: string; address: string };
 type Social = { instagram: string; facebook: string; tiktok: string; youtube: string; whatsapp: string };
+type About = { title: string; body: string };
+type Features = { blog_enabled: boolean };
 
 const emptyContact: Contact = { phone: "", whatsapp: "", email: "", creci: "", address: "" };
 const emptySocial: Social = { instagram: "", facebook: "", tiktok: "", youtube: "", whatsapp: "" };
+const emptyAbout: About = { title: "", body: "" };
+const defaultFeatures: Features = { blog_enabled: true };
 
 function Configuracoes() {
   const { data, refetch } = useQuery({
@@ -28,28 +32,53 @@ function Configuracoes() {
 
   const [contact, setContact] = useState<Contact>(emptyContact);
   const [social, setSocial] = useState<Social>(emptySocial);
+  const [about, setAbout] = useState<About>(emptyAbout);
+  const [features, setFeatures] = useState<Features>(defaultFeatures);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (data) {
       setContact({ ...emptyContact, ...(data.contact ?? {}) });
       setSocial({ ...emptySocial, ...(data.social_links ?? {}) });
+      setAbout({ ...emptyAbout, ...(data.about ?? {}) });
+      setFeatures({ ...defaultFeatures, ...(data.features ?? {}) });
     }
   }, [data]);
 
   async function save() {
     setSaving(true);
-    const { error: e1 } = await supabase.from("site_settings").upsert({ key: "contact", value: contact });
-    const { error: e2 } = await supabase.from("site_settings").upsert({ key: "social_links", value: social });
+    const upserts = [
+      supabase.from("site_settings").upsert({ key: "contact", value: contact }),
+      supabase.from("site_settings").upsert({ key: "social_links", value: social }),
+      supabase.from("site_settings").upsert({ key: "about", value: about }),
+      supabase.from("site_settings").upsert({ key: "features", value: features }),
+    ];
+    const results = await Promise.all(upserts);
     setSaving(false);
-    if (e1 || e2) toast.error("Erro: " + (e1?.message ?? e2?.message));
+    const err = results.find((r) => r.error)?.error;
+    if (err) toast.error("Erro: " + err.message);
     else { toast.success("Configurações salvas."); refetch(); }
   }
 
   return (
     <div className="max-w-3xl">
       <h1 className="text-2xl font-bold">Configurações</h1>
-      <p className="mt-1 text-sm text-muted-foreground">Dados de contato e redes sociais usados no site.</p>
+      <p className="mt-1 text-sm text-muted-foreground">Tudo aqui é refletido em tempo real no site.</p>
+
+      <Card title="Recursos do site">
+        <label className="flex cursor-pointer items-center justify-between rounded border border-border bg-background px-4 py-3">
+          <div>
+            <p className="font-medium">Exibir Blog no site</p>
+            <p className="text-xs text-muted-foreground">Quando desativado, o menu Blog desaparece e a página redireciona para a home.</p>
+          </div>
+          <input
+            type="checkbox"
+            checked={features.blog_enabled}
+            onChange={(e) => setFeatures({ ...features, blog_enabled: e.target.checked })}
+            className="h-5 w-5"
+          />
+        </label>
+      </Card>
 
       <Card title="Contato">
         <Grid>
@@ -58,6 +87,13 @@ function Configuracoes() {
           <F label="E-mail"><input className="input" value={contact.email} onChange={(e) => setContact({ ...contact, email: e.target.value })} /></F>
           <F label="CRECI"><input className="input" value={contact.creci} onChange={(e) => setContact({ ...contact, creci: e.target.value })} /></F>
           <F label="Endereço" className="md:col-span-2"><input className="input" value={contact.address} onChange={(e) => setContact({ ...contact, address: e.target.value })} /></F>
+        </Grid>
+      </Card>
+
+      <Card title="Sobre (página Quem Sou)">
+        <Grid>
+          <F label="Título" className="md:col-span-2"><input className="input" value={about.title} onChange={(e) => setAbout({ ...about, title: e.target.value })} /></F>
+          <F label="Texto" className="md:col-span-2"><textarea className="input min-h-40" value={about.body} onChange={(e) => setAbout({ ...about, body: e.target.value })} /></F>
         </Grid>
       </Card>
 
@@ -73,8 +109,7 @@ function Configuracoes() {
 
       <div className="mt-6 flex justify-end">
         <button onClick={save} disabled={saving} className="btn-primary">
-          {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Salvar configurações
+          {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Salvar configurações
         </button>
       </div>
 
