@@ -1,14 +1,17 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { Newspaper } from "lucide-react";
+import { useFeatures } from "@/lib/site-settings";
 
 export const Route = createFileRoute("/blog")({
   component: BlogPage,
 });
 
 function BlogPage() {
+  const { data: features, isLoading: loadingFeatures } = useFeatures();
+  const enabled = features?.blog_enabled !== false;
   const { data, isLoading } = useQuery({
     queryKey: ["blog-posts"],
     queryFn: async () => {
@@ -20,7 +23,10 @@ function BlogPage() {
       if (error) throw error;
       return data;
     },
+    enabled,
   });
+
+  if (!loadingFeatures && !enabled) return <Navigate to="/" replace />;
 
   return (
     <SiteLayout>
