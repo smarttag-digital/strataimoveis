@@ -20,6 +20,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ImovelRefRouteImport } from './routes/imovel.$ref'
 import { Route as ImoveisSlugRouteImport } from './routes/imoveis.$slug'
+import { Route as EmpreendimentoSlugRouteImport } from './routes/empreendimento.$slug'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminImoveisRouteImport } from './routes/admin.imoveis'
 import { Route as AdminEmpreendimentosRouteImport } from './routes/admin.empreendimentos'
@@ -85,6 +86,11 @@ const ImoveisSlugRoute = ImoveisSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => ImoveisRoute,
+} as any)
+const EmpreendimentoSlugRoute = EmpreendimentoSlugRouteImport.update({
+  id: '/empreendimento/$slug',
+  path: '/empreendimento/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminLeadsRoute = AdminLeadsRouteImport.update({
   id: '/leads',
@@ -154,6 +160,7 @@ export interface FileRoutesByFullPath {
   '/admin/empreendimentos': typeof AdminEmpreendimentosRouteWithChildren
   '/admin/imoveis': typeof AdminImoveisRouteWithChildren
   '/admin/leads': typeof AdminLeadsRoute
+  '/empreendimento/$slug': typeof EmpreendimentoSlugRoute
   '/imoveis/$slug': typeof ImoveisSlugRoute
   '/imovel/$ref': typeof ImovelRefRoute
   '/admin/': typeof AdminIndexRoute
@@ -176,6 +183,7 @@ export interface FileRoutesByTo {
   '/admin/empreendimentos': typeof AdminEmpreendimentosRouteWithChildren
   '/admin/imoveis': typeof AdminImoveisRouteWithChildren
   '/admin/leads': typeof AdminLeadsRoute
+  '/empreendimento/$slug': typeof EmpreendimentoSlugRoute
   '/imoveis/$slug': typeof ImoveisSlugRoute
   '/imovel/$ref': typeof ImovelRefRoute
   '/admin': typeof AdminIndexRoute
@@ -200,6 +208,7 @@ export interface FileRoutesById {
   '/admin/empreendimentos': typeof AdminEmpreendimentosRouteWithChildren
   '/admin/imoveis': typeof AdminImoveisRouteWithChildren
   '/admin/leads': typeof AdminLeadsRoute
+  '/empreendimento/$slug': typeof EmpreendimentoSlugRoute
   '/imoveis/$slug': typeof ImoveisSlugRoute
   '/imovel/$ref': typeof ImovelRefRoute
   '/admin/': typeof AdminIndexRoute
@@ -225,6 +234,7 @@ export interface FileRouteTypes {
     | '/admin/empreendimentos'
     | '/admin/imoveis'
     | '/admin/leads'
+    | '/empreendimento/$slug'
     | '/imoveis/$slug'
     | '/imovel/$ref'
     | '/admin/'
@@ -247,6 +257,7 @@ export interface FileRouteTypes {
     | '/admin/empreendimentos'
     | '/admin/imoveis'
     | '/admin/leads'
+    | '/empreendimento/$slug'
     | '/imoveis/$slug'
     | '/imovel/$ref'
     | '/admin'
@@ -270,6 +281,7 @@ export interface FileRouteTypes {
     | '/admin/empreendimentos'
     | '/admin/imoveis'
     | '/admin/leads'
+    | '/empreendimento/$slug'
     | '/imoveis/$slug'
     | '/imovel/$ref'
     | '/admin/'
@@ -288,6 +300,7 @@ export interface RootRouteChildren {
   EmpreendimentosRoute: typeof EmpreendimentosRoute
   ImoveisRoute: typeof ImoveisRouteWithChildren
   SobreRoute: typeof SobreRoute
+  EmpreendimentoSlugRoute: typeof EmpreendimentoSlugRoute
   ImovelRefRoute: typeof ImovelRefRoute
 }
 
@@ -369,6 +382,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/imoveis/$slug'
       preLoaderRoute: typeof ImoveisSlugRouteImport
       parentRoute: typeof ImoveisRoute
+    }
+    '/empreendimento/$slug': {
+      id: '/empreendimento/$slug'
+      path: '/empreendimento/$slug'
+      fullPath: '/empreendimento/$slug'
+      preLoaderRoute: typeof EmpreendimentoSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/leads': {
       id: '/admin/leads'
@@ -512,6 +532,7 @@ const rootRouteChildren: RootRouteChildren = {
   EmpreendimentosRoute: EmpreendimentosRoute,
   ImoveisRoute: ImoveisRouteWithChildren,
   SobreRoute: SobreRoute,
+  EmpreendimentoSlugRoute: EmpreendimentoSlugRoute,
   ImovelRefRoute: ImovelRefRoute,
 }
 export const routeTree = rootRouteImport
