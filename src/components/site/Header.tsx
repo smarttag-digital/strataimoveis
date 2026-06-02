@@ -2,18 +2,25 @@ import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import logo from "@/assets/logo-leticia-souza.png";
 import { Menu, X } from "lucide-react";
+import { useFeatures } from "@/lib/site-settings";
 
-const links = [
+const baseLinks = [
   { to: "/", label: "Início" },
   { to: "/imoveis", label: "Imóveis" },
   { to: "/empreendimentos", label: "Empreendimentos" },
   { to: "/sobre", label: "Sobre" },
-  { to: "/blog", label: "Blog" },
-  { to: "/contato", label: "Contato" },
 ];
+const blogLink = { to: "/blog", label: "Blog" };
+const contactLink = { to: "/contato", label: "Contato" };
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const { data: features } = useFeatures();
+  const links = [
+    ...baseLinks,
+    ...(features?.blog_enabled !== false ? [blogLink] : []),
+    contactLink,
+  ];
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur">
       <div className="container-prose flex h-20 items-center justify-between">
@@ -38,11 +45,7 @@ export function Header() {
             </Link>
           ))}
         </nav>
-        <button
-          onClick={() => setOpen((v) => !v)}
-          className="lg:hidden"
-          aria-label="Menu"
-        >
+        <button onClick={() => setOpen((v) => !v)} className="lg:hidden" aria-label="Menu">
           {open ? <X /> : <Menu />}
         </button>
       </div>
@@ -50,12 +53,7 @@ export function Header() {
         <nav className="border-t border-border bg-background lg:hidden">
           <div className="container-prose flex flex-col py-4">
             {links.map((l) => (
-              <Link
-                key={l.to}
-                to={l.to}
-                onClick={() => setOpen(false)}
-                className="py-3 text-sm font-medium"
-              >
+              <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="py-3 text-sm font-medium">
                 {l.label}
               </Link>
             ))}
