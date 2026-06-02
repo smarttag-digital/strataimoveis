@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      agents: {
+        Row: {
+          active: boolean
+          bio: string | null
+          created_at: string
+          creci: string | null
+          email: string | null
+          id: string
+          name: string
+          phone: string | null
+          photo: string | null
+          updated_at: string
+          whatsapp: string | null
+        }
+        Insert: {
+          active?: boolean
+          bio?: string | null
+          created_at?: string
+          creci?: string | null
+          email?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+          photo?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Update: {
+          active?: boolean
+          bio?: string | null
+          created_at?: string
+          creci?: string | null
+          email?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          photo?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
       blog_posts: {
         Row: {
           author: string | null
@@ -67,52 +109,88 @@ export type Database = {
       }
       developments: {
         Row: {
+          address: string | null
+          builder: string | null
           city: string | null
+          construction_status: string | null
           cover_image: string | null
           created_at: string
+          delivery_date: string | null
           description: string | null
           differentials: Json
           gallery: Json
           id: string
+          is_featured: boolean
+          latitude: number | null
           location: string | null
+          longitude: number | null
           map_embed: string | null
           name: string
+          neighborhood: string | null
+          price_from: number | null
+          price_to: number | null
           published: boolean
           slug: string
+          units_count: number | null
           updated_at: string
           videos: Json
+          virtual_tour_url: string | null
         }
         Insert: {
+          address?: string | null
+          builder?: string | null
           city?: string | null
+          construction_status?: string | null
           cover_image?: string | null
           created_at?: string
+          delivery_date?: string | null
           description?: string | null
           differentials?: Json
           gallery?: Json
           id?: string
+          is_featured?: boolean
+          latitude?: number | null
           location?: string | null
+          longitude?: number | null
           map_embed?: string | null
           name: string
+          neighborhood?: string | null
+          price_from?: number | null
+          price_to?: number | null
           published?: boolean
           slug: string
+          units_count?: number | null
           updated_at?: string
           videos?: Json
+          virtual_tour_url?: string | null
         }
         Update: {
+          address?: string | null
+          builder?: string | null
           city?: string | null
+          construction_status?: string | null
           cover_image?: string | null
           created_at?: string
+          delivery_date?: string | null
           description?: string | null
           differentials?: Json
           gallery?: Json
           id?: string
+          is_featured?: boolean
+          latitude?: number | null
           location?: string | null
+          longitude?: number | null
           map_embed?: string | null
           name?: string
+          neighborhood?: string | null
+          price_from?: number | null
+          price_to?: number | null
           published?: boolean
           slug?: string
+          units_count?: number | null
           updated_at?: string
           videos?: Json
+          virtual_tour_url?: string | null
         }
         Relationships: []
       }
@@ -152,22 +230,28 @@ export type Database = {
       properties: {
         Row: {
           address: string | null
+          agent_id: string | null
+          archived: boolean
           bathrooms: number | null
           bedrooms: number | null
           built_area: number | null
           city: string
+          condo_fee: number | null
           cover_image: string | null
           created_at: string
           description: string | null
           features: Json
           gallery: Json
           id: string
+          iptu: number | null
           is_featured: boolean
           is_launch: boolean
           is_mcmv: boolean
           is_new: boolean
           is_opportunity: boolean
           land_area: number | null
+          latitude: number | null
+          longitude: number | null
           neighborhood: string | null
           parking_spaces: number | null
           price: number | null
@@ -175,29 +259,40 @@ export type Database = {
           published: boolean
           reference: string | null
           slug: string
+          state: string | null
+          status: string
+          suites: number | null
           title: string
+          total_area: number | null
           transaction_type: string
           updated_at: string
           videos: Json
+          virtual_tour_url: string | null
         }
         Insert: {
           address?: string | null
+          agent_id?: string | null
+          archived?: boolean
           bathrooms?: number | null
           bedrooms?: number | null
           built_area?: number | null
           city?: string
+          condo_fee?: number | null
           cover_image?: string | null
           created_at?: string
           description?: string | null
           features?: Json
           gallery?: Json
           id?: string
+          iptu?: number | null
           is_featured?: boolean
           is_launch?: boolean
           is_mcmv?: boolean
           is_new?: boolean
           is_opportunity?: boolean
           land_area?: number | null
+          latitude?: number | null
+          longitude?: number | null
           neighborhood?: string | null
           parking_spaces?: number | null
           price?: number | null
@@ -205,29 +300,40 @@ export type Database = {
           published?: boolean
           reference?: string | null
           slug: string
+          state?: string | null
+          status?: string
+          suites?: number | null
           title: string
+          total_area?: number | null
           transaction_type?: string
           updated_at?: string
           videos?: Json
+          virtual_tour_url?: string | null
         }
         Update: {
           address?: string | null
+          agent_id?: string | null
+          archived?: boolean
           bathrooms?: number | null
           bedrooms?: number | null
           built_area?: number | null
           city?: string
+          condo_fee?: number | null
           cover_image?: string | null
           created_at?: string
           description?: string | null
           features?: Json
           gallery?: Json
           id?: string
+          iptu?: number | null
           is_featured?: boolean
           is_launch?: boolean
           is_mcmv?: boolean
           is_new?: boolean
           is_opportunity?: boolean
           land_area?: number | null
+          latitude?: number | null
+          longitude?: number | null
           neighborhood?: string | null
           parking_spaces?: number | null
           price?: number | null
@@ -235,10 +341,15 @@ export type Database = {
           published?: boolean
           reference?: string | null
           slug?: string
+          state?: string | null
+          status?: string
+          suites?: number | null
           title?: string
+          total_area?: number | null
           transaction_type?: string
           updated_at?: string
           videos?: Json
+          virtual_tour_url?: string | null
         }
         Relationships: []
       }
