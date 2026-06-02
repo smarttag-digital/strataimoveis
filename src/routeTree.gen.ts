@@ -20,12 +20,17 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ImovelRefRouteImport } from './routes/imovel.$ref'
 import { Route as ImoveisSlugRouteImport } from './routes/imoveis.$slug'
+import { Route as EmpreendimentoSlugRouteImport } from './routes/empreendimento.$slug'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminImoveisRouteImport } from './routes/admin.imoveis'
+import { Route as AdminEmpreendimentosRouteImport } from './routes/admin.empreendimentos'
+import { Route as AdminCorretoresRouteImport } from './routes/admin.corretores'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
 import { Route as AdminBlogRouteImport } from './routes/admin.blog'
 import { Route as AdminImoveisNovoRouteImport } from './routes/admin.imoveis.novo'
+import { Route as AdminEmpreendimentosNovoRouteImport } from './routes/admin.empreendimentos.novo'
 import { Route as AdminImoveisIdEditarRouteImport } from './routes/admin.imoveis.$id.editar'
+import { Route as AdminEmpreendimentosIdEditarRouteImport } from './routes/admin.empreendimentos.$id.editar'
 
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
@@ -82,6 +87,11 @@ const ImoveisSlugRoute = ImoveisSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => ImoveisRoute,
 } as any)
+const EmpreendimentoSlugRoute = EmpreendimentoSlugRouteImport.update({
+  id: '/empreendimento/$slug',
+  path: '/empreendimento/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminLeadsRoute = AdminLeadsRouteImport.update({
   id: '/leads',
   path: '/leads',
@@ -90,6 +100,16 @@ const AdminLeadsRoute = AdminLeadsRouteImport.update({
 const AdminImoveisRoute = AdminImoveisRouteImport.update({
   id: '/imoveis',
   path: '/imoveis',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEmpreendimentosRoute = AdminEmpreendimentosRouteImport.update({
+  id: '/empreendimentos',
+  path: '/empreendimentos',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCorretoresRoute = AdminCorretoresRouteImport.update({
+  id: '/corretores',
+  path: '/corretores',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminConfiguracoesRoute = AdminConfiguracoesRouteImport.update({
@@ -107,11 +127,23 @@ const AdminImoveisNovoRoute = AdminImoveisNovoRouteImport.update({
   path: '/novo',
   getParentRoute: () => AdminImoveisRoute,
 } as any)
+const AdminEmpreendimentosNovoRoute =
+  AdminEmpreendimentosNovoRouteImport.update({
+    id: '/novo',
+    path: '/novo',
+    getParentRoute: () => AdminEmpreendimentosRoute,
+  } as any)
 const AdminImoveisIdEditarRoute = AdminImoveisIdEditarRouteImport.update({
   id: '/$id/editar',
   path: '/$id/editar',
   getParentRoute: () => AdminImoveisRoute,
 } as any)
+const AdminEmpreendimentosIdEditarRoute =
+  AdminEmpreendimentosIdEditarRouteImport.update({
+    id: '/$id/editar',
+    path: '/$id/editar',
+    getParentRoute: () => AdminEmpreendimentosRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -124,12 +156,17 @@ export interface FileRoutesByFullPath {
   '/sobre': typeof SobreRoute
   '/admin/blog': typeof AdminBlogRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
+  '/admin/corretores': typeof AdminCorretoresRoute
+  '/admin/empreendimentos': typeof AdminEmpreendimentosRouteWithChildren
   '/admin/imoveis': typeof AdminImoveisRouteWithChildren
   '/admin/leads': typeof AdminLeadsRoute
+  '/empreendimento/$slug': typeof EmpreendimentoSlugRoute
   '/imoveis/$slug': typeof ImoveisSlugRoute
   '/imovel/$ref': typeof ImovelRefRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/empreendimentos/novo': typeof AdminEmpreendimentosNovoRoute
   '/admin/imoveis/novo': typeof AdminImoveisNovoRoute
+  '/admin/empreendimentos/$id/editar': typeof AdminEmpreendimentosIdEditarRoute
   '/admin/imoveis/$id/editar': typeof AdminImoveisIdEditarRoute
 }
 export interface FileRoutesByTo {
@@ -142,12 +179,17 @@ export interface FileRoutesByTo {
   '/sobre': typeof SobreRoute
   '/admin/blog': typeof AdminBlogRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
+  '/admin/corretores': typeof AdminCorretoresRoute
+  '/admin/empreendimentos': typeof AdminEmpreendimentosRouteWithChildren
   '/admin/imoveis': typeof AdminImoveisRouteWithChildren
   '/admin/leads': typeof AdminLeadsRoute
+  '/empreendimento/$slug': typeof EmpreendimentoSlugRoute
   '/imoveis/$slug': typeof ImoveisSlugRoute
   '/imovel/$ref': typeof ImovelRefRoute
   '/admin': typeof AdminIndexRoute
+  '/admin/empreendimentos/novo': typeof AdminEmpreendimentosNovoRoute
   '/admin/imoveis/novo': typeof AdminImoveisNovoRoute
+  '/admin/empreendimentos/$id/editar': typeof AdminEmpreendimentosIdEditarRoute
   '/admin/imoveis/$id/editar': typeof AdminImoveisIdEditarRoute
 }
 export interface FileRoutesById {
@@ -162,12 +204,17 @@ export interface FileRoutesById {
   '/sobre': typeof SobreRoute
   '/admin/blog': typeof AdminBlogRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
+  '/admin/corretores': typeof AdminCorretoresRoute
+  '/admin/empreendimentos': typeof AdminEmpreendimentosRouteWithChildren
   '/admin/imoveis': typeof AdminImoveisRouteWithChildren
   '/admin/leads': typeof AdminLeadsRoute
+  '/empreendimento/$slug': typeof EmpreendimentoSlugRoute
   '/imoveis/$slug': typeof ImoveisSlugRoute
   '/imovel/$ref': typeof ImovelRefRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/empreendimentos/novo': typeof AdminEmpreendimentosNovoRoute
   '/admin/imoveis/novo': typeof AdminImoveisNovoRoute
+  '/admin/empreendimentos/$id/editar': typeof AdminEmpreendimentosIdEditarRoute
   '/admin/imoveis/$id/editar': typeof AdminImoveisIdEditarRoute
 }
 export interface FileRouteTypes {
@@ -183,12 +230,17 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/admin/blog'
     | '/admin/configuracoes'
+    | '/admin/corretores'
+    | '/admin/empreendimentos'
     | '/admin/imoveis'
     | '/admin/leads'
+    | '/empreendimento/$slug'
     | '/imoveis/$slug'
     | '/imovel/$ref'
     | '/admin/'
+    | '/admin/empreendimentos/novo'
     | '/admin/imoveis/novo'
+    | '/admin/empreendimentos/$id/editar'
     | '/admin/imoveis/$id/editar'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -201,12 +253,17 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/admin/blog'
     | '/admin/configuracoes'
+    | '/admin/corretores'
+    | '/admin/empreendimentos'
     | '/admin/imoveis'
     | '/admin/leads'
+    | '/empreendimento/$slug'
     | '/imoveis/$slug'
     | '/imovel/$ref'
     | '/admin'
+    | '/admin/empreendimentos/novo'
     | '/admin/imoveis/novo'
+    | '/admin/empreendimentos/$id/editar'
     | '/admin/imoveis/$id/editar'
   id:
     | '__root__'
@@ -220,12 +277,17 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/admin/blog'
     | '/admin/configuracoes'
+    | '/admin/corretores'
+    | '/admin/empreendimentos'
     | '/admin/imoveis'
     | '/admin/leads'
+    | '/empreendimento/$slug'
     | '/imoveis/$slug'
     | '/imovel/$ref'
     | '/admin/'
+    | '/admin/empreendimentos/novo'
     | '/admin/imoveis/novo'
+    | '/admin/empreendimentos/$id/editar'
     | '/admin/imoveis/$id/editar'
   fileRoutesById: FileRoutesById
 }
@@ -238,6 +300,7 @@ export interface RootRouteChildren {
   EmpreendimentosRoute: typeof EmpreendimentosRoute
   ImoveisRoute: typeof ImoveisRouteWithChildren
   SobreRoute: typeof SobreRoute
+  EmpreendimentoSlugRoute: typeof EmpreendimentoSlugRoute
   ImovelRefRoute: typeof ImovelRefRoute
 }
 
@@ -320,6 +383,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImoveisSlugRouteImport
       parentRoute: typeof ImoveisRoute
     }
+    '/empreendimento/$slug': {
+      id: '/empreendimento/$slug'
+      path: '/empreendimento/$slug'
+      fullPath: '/empreendimento/$slug'
+      preLoaderRoute: typeof EmpreendimentoSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/leads': {
       id: '/admin/leads'
       path: '/leads'
@@ -332,6 +402,20 @@ declare module '@tanstack/react-router' {
       path: '/imoveis'
       fullPath: '/admin/imoveis'
       preLoaderRoute: typeof AdminImoveisRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/empreendimentos': {
+      id: '/admin/empreendimentos'
+      path: '/empreendimentos'
+      fullPath: '/admin/empreendimentos'
+      preLoaderRoute: typeof AdminEmpreendimentosRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/corretores': {
+      id: '/admin/corretores'
+      path: '/corretores'
+      fullPath: '/admin/corretores'
+      preLoaderRoute: typeof AdminCorretoresRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/configuracoes': {
@@ -355,6 +439,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminImoveisNovoRouteImport
       parentRoute: typeof AdminImoveisRoute
     }
+    '/admin/empreendimentos/novo': {
+      id: '/admin/empreendimentos/novo'
+      path: '/novo'
+      fullPath: '/admin/empreendimentos/novo'
+      preLoaderRoute: typeof AdminEmpreendimentosNovoRouteImport
+      parentRoute: typeof AdminEmpreendimentosRoute
+    }
     '/admin/imoveis/$id/editar': {
       id: '/admin/imoveis/$id/editar'
       path: '/$id/editar'
@@ -362,8 +453,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminImoveisIdEditarRouteImport
       parentRoute: typeof AdminImoveisRoute
     }
+    '/admin/empreendimentos/$id/editar': {
+      id: '/admin/empreendimentos/$id/editar'
+      path: '/$id/editar'
+      fullPath: '/admin/empreendimentos/$id/editar'
+      preLoaderRoute: typeof AdminEmpreendimentosIdEditarRouteImport
+      parentRoute: typeof AdminEmpreendimentosRoute
+    }
   }
 }
+
+interface AdminEmpreendimentosRouteChildren {
+  AdminEmpreendimentosNovoRoute: typeof AdminEmpreendimentosNovoRoute
+  AdminEmpreendimentosIdEditarRoute: typeof AdminEmpreendimentosIdEditarRoute
+}
+
+const AdminEmpreendimentosRouteChildren: AdminEmpreendimentosRouteChildren = {
+  AdminEmpreendimentosNovoRoute: AdminEmpreendimentosNovoRoute,
+  AdminEmpreendimentosIdEditarRoute: AdminEmpreendimentosIdEditarRoute,
+}
+
+const AdminEmpreendimentosRouteWithChildren =
+  AdminEmpreendimentosRoute._addFileChildren(AdminEmpreendimentosRouteChildren)
 
 interface AdminImoveisRouteChildren {
   AdminImoveisNovoRoute: typeof AdminImoveisNovoRoute
@@ -382,6 +493,8 @@ const AdminImoveisRouteWithChildren = AdminImoveisRoute._addFileChildren(
 interface AdminRouteChildren {
   AdminBlogRoute: typeof AdminBlogRoute
   AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
+  AdminCorretoresRoute: typeof AdminCorretoresRoute
+  AdminEmpreendimentosRoute: typeof AdminEmpreendimentosRouteWithChildren
   AdminImoveisRoute: typeof AdminImoveisRouteWithChildren
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -390,6 +503,8 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminBlogRoute: AdminBlogRoute,
   AdminConfiguracoesRoute: AdminConfiguracoesRoute,
+  AdminCorretoresRoute: AdminCorretoresRoute,
+  AdminEmpreendimentosRoute: AdminEmpreendimentosRouteWithChildren,
   AdminImoveisRoute: AdminImoveisRouteWithChildren,
   AdminLeadsRoute: AdminLeadsRoute,
   AdminIndexRoute: AdminIndexRoute,
@@ -417,6 +532,7 @@ const rootRouteChildren: RootRouteChildren = {
   EmpreendimentosRoute: EmpreendimentosRoute,
   ImoveisRoute: ImoveisRouteWithChildren,
   SobreRoute: SobreRoute,
+  EmpreendimentoSlugRoute: EmpreendimentoSlugRoute,
   ImovelRefRoute: ImovelRefRoute,
 }
 export const routeTree = rootRouteImport

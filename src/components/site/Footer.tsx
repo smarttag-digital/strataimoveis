@@ -4,6 +4,7 @@ import logo from "@/assets/logo-leticia-souza-dark.png";
 import { SITE } from "@/lib/site";
 import { Instagram, Facebook, Mail, Phone, Youtube } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useFeatures } from "@/lib/site-settings";
 
 type SocialLinks = {
   instagram?: string;
@@ -41,6 +42,8 @@ export function useSocialLinks() {
 
 export function Footer() {
   const { data: social } = useSocialLinks();
+  const { data: features } = useFeatures();
+  const blogOn = features?.blog_enabled !== false;
   const links = social ?? {};
   const items = [
     { key: "instagram", url: links.instagram, label: "Instagram", Icon: Instagram },
@@ -93,7 +96,7 @@ export function Footer() {
               <li><Link to="/imoveis">Imóveis</Link></li>
               <li><Link to="/empreendimentos">Empreendimentos</Link></li>
               <li><Link to="/sobre">Sobre</Link></li>
-              <li><Link to="/blog">Blog</Link></li>
+              {blogOn && <li><Link to="/blog">Blog</Link></li>}
               <li><Link to="/contato">Contato</Link></li>
             </ul>
           </div>

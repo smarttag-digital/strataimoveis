@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Plus, Pencil, Eye, EyeOff, Star } from "lucide-react";
+import { Plus, Pencil, Eye, EyeOff, Star, Copy, Archive } from "lucide-react";
 import { formatPrice } from "@/lib/site";
 import { useState } from "react";
+import { toast } from "sonner";
+import { useRealtimeSync } from "@/hooks/use-realtime-sync";
 
 export const Route = createFileRoute("/admin/imoveis")({
   component: AdminImoveis,

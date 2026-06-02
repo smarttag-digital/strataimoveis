@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteLayout } from "@/components/site/SiteLayout";
@@ -43,25 +43,32 @@ function EmpreendimentosPage() {
         ) : data && data.length > 0 ? (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {data.map((d) => (
-              <article key={d.id} className="overflow-hidden rounded-lg border border-border bg-card">
-                {d.cover_image ? (
-                  <img src={d.cover_image} alt={d.name} className="aspect-[16/9] w-full object-cover" loading="lazy" />
-                ) : (
-                  <div className="flex aspect-[16/9] items-center justify-center bg-secondary text-muted-foreground">
-                    <Building2 className="h-10 w-10" />
-                  </div>
-                )}
+              <article key={d.id} className="overflow-hidden rounded-lg border border-border bg-card transition-shadow hover:shadow-lg">
+                <Link to="/empreendimento/$slug" params={{ slug: d.slug }}>
+                  {d.cover_image ? (
+                    <img src={d.cover_image} alt={d.name} className="aspect-[16/9] w-full object-cover" loading="lazy" />
+                  ) : (
+                    <div className="flex aspect-[16/9] items-center justify-center bg-secondary text-muted-foreground">
+                      <Building2 className="h-10 w-10" />
+                    </div>
+                  )}
+                </Link>
                 <div className="p-6">
-                  <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">{d.location || d.city}</p>
-                  <h3 className="mt-1 text-xl font-semibold">{d.name}</h3>
+                  <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">{[d.neighborhood, d.city].filter(Boolean).join(" · ") || d.location}</p>
+                  <h3 className="mt-1 text-xl font-semibold">
+                    <Link to="/empreendimento/$slug" params={{ slug: d.slug }}>{d.name}</Link>
+                  </h3>
                   {d.description && <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">{d.description}</p>}
-                  <a
-                    href={whatsappLink(`Olá Letícia, gostaria de mais informações sobre o empreendimento "${d.name}".`)}
-                    target="_blank" rel="noreferrer"
-                    className="btn-outline mt-5 inline-flex"
-                  >
-                    Tenho interesse
-                  </a>
+                  <div className="mt-5 flex gap-2">
+                    <Link to="/empreendimento/$slug" params={{ slug: d.slug }} className="btn-primary text-xs">Ver detalhes</Link>
+                    <a
+                      href={whatsappLink(`Olá Letícia, gostaria de mais informações sobre o empreendimento "${d.name}".`)}
+                      target="_blank" rel="noreferrer"
+                      className="btn-outline text-xs"
+                    >
+                      Tenho interesse
+                    </a>
+                  </div>
                 </div>
               </article>
             ))}
