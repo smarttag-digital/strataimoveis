@@ -53,7 +53,7 @@ function AdminImoveis() {
     },
   });
 
-  async function update(id: string, patch: Record<string, any>, msg?: string) {
+  async function update(id: string, patch: Partial<{ published: boolean; is_featured: boolean; archived: boolean; status: string }>, msg?: string) {
     const { error } = await supabase.from("properties").update(patch).eq("id", id);
     if (error) toast.error(error.message);
     else if (msg) toast.success(msg);
