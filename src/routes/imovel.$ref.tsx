@@ -13,13 +13,13 @@ function ImovelByRef() {
   const { data, isLoading } = useQuery({
     queryKey: ["property-by-ref", ref],
     queryFn: async () => {
-      // Try by reference first (case-insensitive), then by slug
       const upper = ref.toUpperCase();
       let { data } = await supabase
         .from("properties")
         .select("slug")
         .eq("reference", upper)
         .eq("published", true)
+        .eq("archived", false)
         .maybeSingle();
       if (!data) {
         const r = await supabase
@@ -27,6 +27,7 @@ function ImovelByRef() {
           .select("slug")
           .eq("slug", ref)
           .eq("published", true)
+          .eq("archived", false)
           .maybeSingle();
         data = r.data;
       }

@@ -2,11 +2,17 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteLayout } from "@/components/site/SiteLayout";
-import { formatPrice, propertyWhatsappLink } from "@/lib/site";
-import { Bed, Bath, Car, Maximize, MapPin, ArrowLeft } from "lucide-react";
+import { formatPrice, propertyWhatsappLink, SITE } from "@/lib/site";
+import { Bed, Bath, Car, Maximize, MapPin, ArrowLeft, Mail, Phone } from "lucide-react";
 
 export const Route = createFileRoute("/imoveis/$slug")({
   component: PropertyDetail,
+  head: ({ params }) => ({
+    meta: [
+      { title: `Imóvel · ${params.slug.replace(/-/g, " ")}` },
+    ],
+    links: [{ rel: "canonical", href: `https://strataimoveis.lovable.app/imoveis/${params.slug}` }],
+  }),
 });
 
 function PropertyDetail() {
@@ -15,7 +21,11 @@ function PropertyDetail() {
     queryKey: ["property", slug],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("properties").select("*").eq("slug", slug).maybeSingle();
+        .from("properties")
+        .select("*, agent:agents(id,name,photo,phone,whatsapp,email,creci,bio,active)")
+        .eq("slug", slug)
+        .eq("archived", false)
+        .maybeSingle();
       if (error) throw error;
       return data;
     },
@@ -39,6 +49,10 @@ function PropertyDetail() {
 
   const gallery = (data.gallery as string[]) || [];
   const allImages = [data.cover_image, ...gallery].filter(Boolean) as string[];
+  const videos = (data.videos as string[]) || [];
+  const agent = (data as any).agent as
+    | { id: string; name: string; photo: string | null; phone: string | null; whatsapp: string | null; email: string | null; creci: string | null; active: boolean }
+    | null;
 
   return (
     <SiteLayout>
@@ -48,7 +62,7 @@ function PropertyDetail() {
         </Link>
         <div className="grid gap-2 md:grid-cols-2">
           {allImages.slice(0, 4).map((img, i) => (
-            <img key={i} src={img} alt="" className={`w-full rounded-lg object-cover ${i === 0 ? "md:col-span-2 aspect-[16/9]" : "aspect-[4/3]"}`} />
+            <img key={i} src={img} alt="" loading="lazy" className={`w-full rounded-lg object-cover ${i === 0 ? "md:col-span-2 aspect-[16/9]" : "aspect-[4/3]"}`} />
           ))}
           {allImages.length === 0 && (
             <div className="md:col-span-2 flex aspect-[16/9] items-center justify-center rounded-lg bg-secondary text-muted-foreground">
@@ -61,16 +75,25 @@ function PropertyDetail() {
           <div>
             <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">
               <MapPin className="mr-1 inline h-3 w-3" />
-              {[data.neighborhood, data.city].filter(Boolean).join(" · ")}
+              {[data.neighborhood, data.city].filter(Boolean).join(" · ")} · Ref. {data.reference}
             </p>
             <h1 className="mt-2 text-3xl font-bold md:text-4xl">{data.title}</h1>
             <p className="mt-4 text-3xl font-bold">{formatPrice(data.price)}</p>
+            {(data.condo_fee || data.iptu) && (
+              <p className="mt-1 text-sm text-muted-foreground">
+                {data.condo_fee ? `Condomínio ${formatPrice(data.condo_fee)}/mês` : null}
+                {data.condo_fee && data.iptu ? " · " : null}
+                {data.iptu ? `IPTU ${formatPrice(data.iptu)}/ano` : null}
+              </p>
+            )}
 
             <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-              {data.bedrooms != null && <Stat icon={Bed} label="Dormitórios" value={data.bedrooms} />}
+              {data.bedrooms != null && <Stat icon={Bed} label={data.suites ? `Dorm. (${data.suites} suítes)` : "Dormitórios"} value={data.bedrooms} />}
               {data.bathrooms != null && <Stat icon={Bath} label="Banheiros" value={data.bathrooms} />}
               {data.parking_spaces != null && <Stat icon={Car} label="Vagas" value={data.parking_spaces} />}
-              {data.built_area != null && <Stat icon={Maximize} label="Área const." value={`${data.built_area}m²`} />}
+              {(data.built_area || data.total_area) != null && (
+                <Stat icon={Maximize} label={data.built_area ? "Área const." : "Área total"} value={`${data.built_area ?? data.total_area}m²`} />
+              )}
             </div>
 
             {data.description && (
@@ -88,24 +111,90 @@ function PropertyDetail() {
                 </ul>
               </div>
             )}
+
+            {videos.length > 0 && (
+              <div className="mt-10">
+                <h2 className="text-xl font-semibold">Vídeos</h2>
+                <div className="mt-3 grid gap-4 sm:grid-cols-2">
+                  {videos.map((u) => (
+                    <div key={u} className="aspect-video overflow-hidden rounded-lg bg-black">
+                      <iframe src={toEmbed(u)} className="h-full w-full" allow="autoplay; fullscreen" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {data.virtual_tour_url && (
+              <div className="mt-10">
+                <h2 className="text-xl font-semibold">Tour Virtual 360°</h2>
+                <div className="mt-3 aspect-video overflow-hidden rounded-lg bg-black">
+                  <iframe src={data.virtual_tour_url} className="h-full w-full" allow="fullscreen; xr-spatial-tracking" />
+                </div>
+              </div>
+            )}
           </div>
 
-          <aside className="sticky top-24 self-start rounded-lg border border-border bg-card p-6">
-            <h3 className="text-lg font-semibold">Tem interesse?</h3>
-            <p className="mt-1 text-sm text-muted-foreground">Fale agora com a Letícia.</p>
-            <a
-              href={propertyWhatsappLink(data.title)}
-              target="_blank"
-              rel="noreferrer"
-              className="btn-primary mt-5 w-full"
-            >
-              Falar no WhatsApp
-            </a>
-            <Link to="/contato" className="btn-outline mt-3 w-full">Enviar mensagem</Link>
+          <aside className="space-y-4">
+            <AgentCard agent={agent} propertyTitle={data.title} />
           </aside>
         </div>
       </section>
     </SiteLayout>
+  );
+}
+
+function AgentCard({ agent, propertyTitle }: { agent: any; propertyTitle: string }) {
+  const useAgent = agent && agent.active;
+  const name = useAgent ? agent.name : "Letícia Souza";
+  const photo = useAgent ? agent.photo : null;
+  const phone = useAgent ? agent.phone : SITE.phone;
+  const whatsapp = useAgent ? agent.whatsapp || agent.phone?.replace(/\D/g, "") : SITE.whatsapp;
+  const email = useAgent ? agent.email : SITE.email;
+  const creci = useAgent ? agent.creci : SITE.creci;
+
+  const waLink = whatsapp
+    ? `https://wa.me/${String(whatsapp).replace(/\D/g, "")}?text=${encodeURIComponent(
+        `Olá ${name}, gostaria de mais informações do imóvel "${propertyTitle}".`
+      )}`
+    : propertyWhatsappLink(propertyTitle);
+
+  return (
+    <div className="sticky top-24 rounded-lg border border-border bg-card p-6">
+      <div className="flex items-center gap-3">
+        {photo ? (
+          <img src={photo} alt={name} className="h-14 w-14 rounded-full object-cover" />
+        ) : (
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--champagne)] text-lg font-bold text-black">
+            {name.charAt(0)}
+          </div>
+        )}
+        <div>
+          <p className="text-xs uppercase tracking-wider text-muted-foreground">Corretor responsável</p>
+          <p className="font-semibold">{name}</p>
+          {creci && <p className="text-xs text-muted-foreground">{creci}</p>}
+        </div>
+      </div>
+
+      <a href={waLink} target="_blank" rel="noreferrer" className="btn-primary mt-5 w-full">
+        Falar com {name.split(" ")[0]} no WhatsApp
+      </a>
+
+      <div className="mt-4 space-y-2 text-sm">
+        {phone && (
+          <a href={`tel:${String(phone).replace(/\D/g, "")}`} className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
+            <Phone className="h-4 w-4" /> {phone}
+          </a>
+        )}
+        {email && (
+          <a href={`mailto:${email}`} className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
+            <Mail className="h-4 w-4" /> {email}
+          </a>
+        )}
+      </div>
+
+      <Link to="/contato" className="btn-outline mt-4 w-full">Enviar mensagem</Link>
+    </div>
   );
 }
 
@@ -117,4 +206,12 @@ function Stat({ icon: Icon, label, value }: { icon: any; label: string; value: a
       <p className="text-lg font-semibold">{value}</p>
     </div>
   );
+}
+
+function toEmbed(url: string) {
+  const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
+  if (yt) return `https://www.youtube.com/embed/${yt[1]}`;
+  const vm = url.match(/vimeo\.com\/(\d+)/);
+  if (vm) return `https://player.vimeo.com/video/${vm[1]}`;
+  return url;
 }
