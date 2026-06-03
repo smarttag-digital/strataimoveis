@@ -41,6 +41,7 @@ export function SearchBar({ variant = "hero", initial }: Props) {
       .from("properties")
       .select("city,neighborhood")
       .eq("published", true)
+      .eq("archived", false)
       .then(({ data }) => {
         if (!data) return;
         setCities([...new Set(data.map((d) => d.city).filter(Boolean) as string[])].sort());
