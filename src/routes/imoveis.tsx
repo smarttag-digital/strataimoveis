@@ -54,7 +54,8 @@ function ImoveisPage() {
       let q = supabase
         .from("properties")
         .select("id,slug,title,city,neighborhood,price,bedrooms,bathrooms,parking_spaces,built_area,cover_image,is_featured,is_new,is_opportunity,is_launch")
-        .eq("published", true);
+        .eq("published", true)
+        .eq("archived", false);
       if (filters.transaction) q = q.eq("transaction_type", filters.transaction);
       if (filters.type) q = q.eq("property_type", filters.type);
       if (filters.city) q = q.ilike("city", `%${filters.city}%`);

@@ -94,6 +94,7 @@ function LatestProperties() {
           "id,slug,title,city,neighborhood,price,bedrooms,bathrooms,parking_spaces,built_area,cover_image,is_featured,is_new,is_opportunity,is_launch"
         )
         .eq("published", true)
+        .eq("archived", false)
         .order("created_at", { ascending: false })
         .limit(6);
       if (error) throw error;
@@ -139,6 +140,7 @@ function FeaturedProperties() {
           "id,slug,title,city,neighborhood,price,bedrooms,bathrooms,parking_spaces,built_area,cover_image,is_featured,is_new,is_opportunity,is_launch"
         )
         .eq("published", true)
+        .eq("archived", false)
         .eq("is_featured", true)
         .order("created_at", { ascending: false })
         .limit(3);
