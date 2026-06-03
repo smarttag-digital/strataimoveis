@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SobreRouteImport } from './routes/sobre'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ImoveisRouteImport } from './routes/imoveis'
 import { Route as EmpreendimentosRouteImport } from './routes/empreendimentos'
 import { Route as ContatoRouteImport } from './routes/contato'
@@ -35,6 +36,11 @@ import { Route as AdminEmpreendimentosIdEditarRouteImport } from './routes/admin
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
   path: '/sobre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ImoveisRoute = ImoveisRouteImport.update({
@@ -153,6 +159,7 @@ export interface FileRoutesByFullPath {
   '/contato': typeof ContatoRoute
   '/empreendimentos': typeof EmpreendimentosRoute
   '/imoveis': typeof ImoveisRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/admin/blog': typeof AdminBlogRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
@@ -176,6 +183,7 @@ export interface FileRoutesByTo {
   '/contato': typeof ContatoRoute
   '/empreendimentos': typeof EmpreendimentosRoute
   '/imoveis': typeof ImoveisRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/admin/blog': typeof AdminBlogRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
@@ -201,6 +209,7 @@ export interface FileRoutesById {
   '/contato': typeof ContatoRoute
   '/empreendimentos': typeof EmpreendimentosRoute
   '/imoveis': typeof ImoveisRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/admin/blog': typeof AdminBlogRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
@@ -227,6 +236,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/empreendimentos'
     | '/imoveis'
+    | '/sitemap.xml'
     | '/sobre'
     | '/admin/blog'
     | '/admin/configuracoes'
@@ -250,6 +260,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/empreendimentos'
     | '/imoveis'
+    | '/sitemap.xml'
     | '/sobre'
     | '/admin/blog'
     | '/admin/configuracoes'
@@ -274,6 +285,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/empreendimentos'
     | '/imoveis'
+    | '/sitemap.xml'
     | '/sobre'
     | '/admin/blog'
     | '/admin/configuracoes'
@@ -299,6 +311,7 @@ export interface RootRouteChildren {
   ContatoRoute: typeof ContatoRoute
   EmpreendimentosRoute: typeof EmpreendimentosRoute
   ImoveisRoute: typeof ImoveisRouteWithChildren
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
   EmpreendimentoSlugRoute: typeof EmpreendimentoSlugRoute
   ImovelRefRoute: typeof ImovelRefRoute
@@ -311,6 +324,13 @@ declare module '@tanstack/react-router' {
       path: '/sobre'
       fullPath: '/sobre'
       preLoaderRoute: typeof SobreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/imoveis': {
@@ -531,6 +551,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContatoRoute: ContatoRoute,
   EmpreendimentosRoute: EmpreendimentosRoute,
   ImoveisRoute: ImoveisRouteWithChildren,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
   EmpreendimentoSlugRoute: EmpreendimentoSlugRoute,
   ImovelRefRoute: ImovelRefRoute,
