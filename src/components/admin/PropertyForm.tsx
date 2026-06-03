@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { PROPERTY_TYPES } from "@/lib/site";
 import { Upload, X, Loader2, Trash2 } from "lucide-react";
@@ -9,18 +10,29 @@ export type PropertyFormValues = {
   property_type: string;
   transaction_type: string;
   price: string;
+  condo_fee: string;
+  iptu: string;
   city: string;
+  state: string;
   neighborhood: string;
   address: string;
+  latitude: string;
+  longitude: string;
   bedrooms: string;
+  suites: string;
   bathrooms: string;
   parking_spaces: string;
   built_area: string;
+  total_area: string;
   land_area: string;
   cover_image: string;
   gallery: string[];
   videos: string[];
+  virtual_tour_url: string;
   features: string[];
+  agent_id: string;
+  status: string;
+  archived: boolean;
   published: boolean;
   is_featured: boolean;
   is_launch: boolean;
@@ -31,12 +43,24 @@ export type PropertyFormValues = {
 
 export const emptyProperty: PropertyFormValues = {
   title: "", description: "", property_type: "casa", transaction_type: "venda",
-  price: "", city: "Tatuí", neighborhood: "", address: "",
-  bedrooms: "", bathrooms: "", parking_spaces: "", built_area: "", land_area: "",
-  cover_image: "", gallery: [], videos: [], features: [],
+  price: "", condo_fee: "", iptu: "",
+  city: "Tatuí", state: "SP", neighborhood: "", address: "",
+  latitude: "", longitude: "",
+  bedrooms: "", suites: "", bathrooms: "", parking_spaces: "",
+  built_area: "", total_area: "", land_area: "",
+  cover_image: "", gallery: [], videos: [], virtual_tour_url: "",
+  features: [], agent_id: "", status: "disponivel", archived: false,
   published: true, is_featured: false, is_launch: false, is_opportunity: false,
   is_new: false, is_mcmv: false,
 };
+
+const STATUS_OPTIONS = [
+  { value: "disponivel", label: "Disponível" },
+  { value: "reservado", label: "Reservado" },
+  { value: "vendido", label: "Vendido" },
+  { value: "alugado", label: "Alugado" },
+  { value: "inativo", label: "Inativo" },
+];
 
 export function PropertyForm({
   initial,
@@ -58,6 +82,18 @@ export function PropertyForm({
   useEffect(() => {
     if (initial) setV({ ...emptyProperty, ...initial });
   }, [initial]);
+
+  const { data: agents } = useQuery({
+    queryKey: ["agents-active"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("agents")
+        .select("id,name")
+        .eq("active", true)
+        .order("name");
+      return data ?? [];
+    },
+  });
 
   function up<K extends keyof PropertyFormValues>(k: K, val: PropertyFormValues[K]) {
     setV((s) => ({ ...s, [k]: val }));
@@ -115,6 +151,12 @@ export function PropertyForm({
           <Field label="Valor (R$)">
             <input className="input" type="number" inputMode="numeric" value={v.price} onChange={(e) => up("price", e.target.value)} />
           </Field>
+          <Field label="Condomínio (R$/mês)">
+            <input className="input" type="number" value={v.condo_fee} onChange={(e) => up("condo_fee", e.target.value)} />
+          </Field>
+          <Field label="IPTU (R$/ano)">
+            <input className="input" type="number" value={v.iptu} onChange={(e) => up("iptu", e.target.value)} />
+          </Field>
           <Field label="Descrição" className="md:col-span-2">
             <textarea className="input min-h-32" value={v.description} onChange={(e) => up("description", e.target.value)} />
           </Field>
@@ -126,11 +168,20 @@ export function PropertyForm({
           <Field label="Cidade">
             <input className="input" value={v.city} onChange={(e) => up("city", e.target.value)} required />
           </Field>
+          <Field label="UF">
+            <input className="input" value={v.state} maxLength={2} onChange={(e) => up("state", e.target.value.toUpperCase())} />
+          </Field>
           <Field label="Bairro">
             <input className="input" value={v.neighborhood} onChange={(e) => up("neighborhood", e.target.value)} />
           </Field>
-          <Field label="Endereço" className="md:col-span-2">
+          <Field label="Endereço">
             <input className="input" value={v.address} onChange={(e) => up("address", e.target.value)} />
+          </Field>
+          <Field label="Latitude">
+            <input className="input" value={v.latitude} onChange={(e) => up("latitude", e.target.value)} placeholder="-23.3556" />
+          </Field>
+          <Field label="Longitude">
+            <input className="input" value={v.longitude} onChange={(e) => up("longitude", e.target.value)} placeholder="-47.8542" />
           </Field>
         </Grid>
       </Card>
@@ -140,6 +191,9 @@ export function PropertyForm({
           <Field label="Dormitórios">
             <input className="input" type="number" value={v.bedrooms} onChange={(e) => up("bedrooms", e.target.value)} />
           </Field>
+          <Field label="Suítes">
+            <input className="input" type="number" value={v.suites} onChange={(e) => up("suites", e.target.value)} />
+          </Field>
           <Field label="Banheiros">
             <input className="input" type="number" value={v.bathrooms} onChange={(e) => up("bathrooms", e.target.value)} />
           </Field>
@@ -148,6 +202,9 @@ export function PropertyForm({
           </Field>
           <Field label="Área construída (m²)">
             <input className="input" type="number" value={v.built_area} onChange={(e) => up("built_area", e.target.value)} />
+          </Field>
+          <Field label="Área total (m²)">
+            <input className="input" type="number" value={v.total_area} onChange={(e) => up("total_area", e.target.value)} />
           </Field>
           <Field label="Área do terreno (m²)">
             <input className="input" type="number" value={v.land_area} onChange={(e) => up("land_area", e.target.value)} />
@@ -236,12 +293,34 @@ export function PropertyForm({
             }}>Adicionar</button>
           </div>
         </div>
+
+        <div className="mt-6">
+          <Field label="Tour Virtual (URL 360º / Matterport)">
+            <input className="input" value={v.virtual_tour_url} onChange={(e) => up("virtual_tour_url", e.target.value)} placeholder="https://my.matterport.com/show/?m=..." />
+          </Field>
+        </div>
       </Card>
 
-      <Card title="Status">
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+      <Card title="Corretor & Status">
+        <Grid>
+          <Field label="Corretor responsável">
+            <select className="input" value={v.agent_id} onChange={(e) => up("agent_id", e.target.value)}>
+              <option value="">— Padrão da imobiliária —</option>
+              {(agents ?? []).map((a) => (
+                <option key={a.id} value={a.id}>{a.name}</option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Status do imóvel">
+            <select className="input" value={v.status} onChange={(e) => up("status", e.target.value)}>
+              {STATUS_OPTIONS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+            </select>
+          </Field>
+        </Grid>
+        <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3">
           <Toggle label="Publicado" v={v.published} onChange={(b) => up("published", b)} />
           <Toggle label="Destaque" v={v.is_featured} onChange={(b) => up("is_featured", b)} />
+          <Toggle label="Arquivado" v={v.archived} onChange={(b) => up("archived", b)} />
           <Toggle label="Lançamento" v={v.is_launch} onChange={(b) => up("is_launch", b)} />
           <Toggle label="Oportunidade" v={v.is_opportunity} onChange={(b) => up("is_opportunity", b)} />
           <Toggle label="Novo" v={v.is_new} onChange={(b) => up("is_new", b)} />
