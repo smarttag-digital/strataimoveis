@@ -2,8 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteLayout } from "@/components/site/SiteLayout";
-import { SITE, whatsappLink } from "@/lib/site";
-import { Mail, MapPin, Phone, CheckCircle2 } from "lucide-react";
+import { whatsappLink } from "@/lib/site";
+import { CheckCircle2 } from "lucide-react";
 
 export const Route = createFileRoute("/contato")({
   component: ContatoPage,
@@ -44,13 +44,10 @@ function ContatoPage() {
         <div>
           <h2 className="text-xl font-semibold">Atendimento personalizado</h2>
           <p className="mt-3 text-muted-foreground">
-            Estou pronta para te atender e indicar a melhor oportunidade do mercado imobiliário de Tatuí.
+            Estou pronta para te atender e indicar a melhor oportunidade do mercado
+            imobiliário de Tatuí. Envie sua mensagem pelo formulário ou chame no WhatsApp —
+            respondo o quanto antes.
           </p>
-          <ul className="mt-8 space-y-4 text-sm">
-            <li className="flex items-center gap-3"><Phone className="h-4 w-4 text-[var(--champagne)]" />{SITE.phone}</li>
-            <li className="flex items-center gap-3"><Mail className="h-4 w-4 text-[var(--champagne)]" />{SITE.email}</li>
-            <li className="flex items-center gap-3"><MapPin className="h-4 w-4 text-[var(--champagne)]" />{SITE.city}</li>
-          </ul>
           <a href={whatsappLink()} target="_blank" rel="noreferrer" className="btn-primary mt-8 inline-flex">
             Falar no WhatsApp
           </a>
