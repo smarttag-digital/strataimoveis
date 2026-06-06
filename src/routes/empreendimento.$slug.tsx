@@ -100,7 +100,31 @@ function DevelopmentDetail() {
             )}
 
             {data.map_embed && (
-              <div className="mt-10" dangerouslySetInnerHTML={{ __html: data.map_embed }} />
+              <div
+                className="mt-10"
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(data.map_embed, {
+                    ALLOWED_TAGS: ["iframe", "div", "a", "br"],
+                    ALLOWED_ATTR: [
+                      "src",
+                      "width",
+                      "height",
+                      "style",
+                      "allowfullscreen",
+                      "allow",
+                      "loading",
+                      "referrerpolicy",
+                      "frameborder",
+                      "title",
+                      "href",
+                      "target",
+                      "rel",
+                      "class",
+                    ],
+                    ALLOWED_URI_REGEXP: /^https:\/\/(www\.)?google\.com\/maps\//i,
+                  }),
+                }}
+              />
             )}
           </div>
 
