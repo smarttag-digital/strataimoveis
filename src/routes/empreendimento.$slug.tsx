@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { whatsappLink, formatPrice } from "@/lib/site";
 import { ArrowLeft, MapPin } from "lucide-react";
+import DOMPurify from "dompurify";
 
 export const Route = createFileRoute("/empreendimento/$slug")({
   component: DevelopmentDetail,
@@ -100,7 +101,31 @@ function DevelopmentDetail() {
             )}
 
             {data.map_embed && (
-              <div className="mt-10" dangerouslySetInnerHTML={{ __html: data.map_embed }} />
+              <div
+                className="mt-10"
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(data.map_embed, {
+                    ALLOWED_TAGS: ["iframe", "div", "a", "br"],
+                    ALLOWED_ATTR: [
+                      "src",
+                      "width",
+                      "height",
+                      "style",
+                      "allowfullscreen",
+                      "allow",
+                      "loading",
+                      "referrerpolicy",
+                      "frameborder",
+                      "title",
+                      "href",
+                      "target",
+                      "rel",
+                      "class",
+                    ],
+                    ALLOWED_URI_REGEXP: /^https:\/\/(www\.)?google\.com\/maps\//i,
+                  }),
+                }}
+              />
             )}
           </div>
 

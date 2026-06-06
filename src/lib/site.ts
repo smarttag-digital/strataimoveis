@@ -7,7 +7,7 @@ export const SITE = {
   email: "contato@leticiasouzaimoveis.com.br",
   city: "Tatuí - SP",
   developer: "Smart Tag",
-  adminEmail: "vivabemeco@gmail.com",
+  
 };
 
 export function whatsappLink(message?: string) {
