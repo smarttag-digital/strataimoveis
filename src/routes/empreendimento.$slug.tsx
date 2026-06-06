@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { whatsappLink, formatPrice } from "@/lib/site";
 import { ArrowLeft, MapPin } from "lucide-react";
+import DOMPurify from "dompurify";
 
 export const Route = createFileRoute("/empreendimento/$slug")({
   component: DevelopmentDetail,
