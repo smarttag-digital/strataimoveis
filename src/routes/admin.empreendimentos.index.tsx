@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Plus, Pencil, Eye, EyeOff, Star } from "lucide-react";
 import { useRealtimeSync } from "@/hooks/use-realtime-sync";
 
-export const Route = createFileRoute("/admin/empreendimentos")({
+export const Route = createFileRoute("/admin/empreendimentos/")({
   component: AdminEmpreendimentos,
 });
 
