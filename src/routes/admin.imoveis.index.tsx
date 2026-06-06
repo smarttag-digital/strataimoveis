@@ -6,7 +6,7 @@ import { formatPrice } from "@/lib/site";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/admin/imoveis")({
+export const Route = createFileRoute("/admin/imoveis/")({
   component: AdminImoveis,
 });
 
