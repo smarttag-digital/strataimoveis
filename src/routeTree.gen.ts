@@ -18,6 +18,7 @@ import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ImoveisIndexRouteImport } from './routes/imoveis.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ImovelRefRouteImport } from './routes/imovel.$ref'
 import { Route as ImoveisSlugRouteImport } from './routes/imoveis.$slug'
@@ -77,6 +78,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ImoveisIndexRoute = ImoveisIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ImoveisRoute,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
@@ -170,6 +176,7 @@ export interface FileRoutesByFullPath {
   '/imoveis/$slug': typeof ImoveisSlugRoute
   '/imovel/$ref': typeof ImovelRefRoute
   '/admin/': typeof AdminIndexRoute
+  '/imoveis/': typeof ImoveisIndexRoute
   '/admin/empreendimentos/novo': typeof AdminEmpreendimentosNovoRoute
   '/admin/imoveis/novo': typeof AdminImoveisNovoRoute
   '/admin/empreendimentos/': typeof AdminEmpreendimentosIndexRoute
@@ -183,7 +190,6 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogRoute
   '/contato': typeof ContatoRoute
   '/empreendimentos': typeof EmpreendimentosRoute
-  '/imoveis': typeof ImoveisRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/admin/blog': typeof AdminBlogRoute
@@ -194,6 +200,7 @@ export interface FileRoutesByTo {
   '/imoveis/$slug': typeof ImoveisSlugRoute
   '/imovel/$ref': typeof ImovelRefRoute
   '/admin': typeof AdminIndexRoute
+  '/imoveis': typeof ImoveisIndexRoute
   '/admin/empreendimentos/novo': typeof AdminEmpreendimentosNovoRoute
   '/admin/imoveis/novo': typeof AdminImoveisNovoRoute
   '/admin/empreendimentos': typeof AdminEmpreendimentosIndexRoute
@@ -220,6 +227,7 @@ export interface FileRoutesById {
   '/imoveis/$slug': typeof ImoveisSlugRoute
   '/imovel/$ref': typeof ImovelRefRoute
   '/admin/': typeof AdminIndexRoute
+  '/imoveis/': typeof ImoveisIndexRoute
   '/admin/empreendimentos/novo': typeof AdminEmpreendimentosNovoRoute
   '/admin/imoveis/novo': typeof AdminImoveisNovoRoute
   '/admin/empreendimentos/': typeof AdminEmpreendimentosIndexRoute
@@ -247,6 +255,7 @@ export interface FileRouteTypes {
     | '/imoveis/$slug'
     | '/imovel/$ref'
     | '/admin/'
+    | '/imoveis/'
     | '/admin/empreendimentos/novo'
     | '/admin/imoveis/novo'
     | '/admin/empreendimentos/'
@@ -260,7 +269,6 @@ export interface FileRouteTypes {
     | '/blog'
     | '/contato'
     | '/empreendimentos'
-    | '/imoveis'
     | '/sitemap.xml'
     | '/sobre'
     | '/admin/blog'
@@ -271,6 +279,7 @@ export interface FileRouteTypes {
     | '/imoveis/$slug'
     | '/imovel/$ref'
     | '/admin'
+    | '/imoveis'
     | '/admin/empreendimentos/novo'
     | '/admin/imoveis/novo'
     | '/admin/empreendimentos'
@@ -296,6 +305,7 @@ export interface FileRouteTypes {
     | '/imoveis/$slug'
     | '/imovel/$ref'
     | '/admin/'
+    | '/imoveis/'
     | '/admin/empreendimentos/novo'
     | '/admin/imoveis/novo'
     | '/admin/empreendimentos/'
@@ -382,6 +392,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/imoveis/': {
+      id: '/imoveis/'
+      path: '/'
+      fullPath: '/imoveis/'
+      preLoaderRoute: typeof ImoveisIndexRouteImport
+      parentRoute: typeof ImoveisRoute
     }
     '/admin/': {
       id: '/admin/'
@@ -516,10 +533,12 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface ImoveisRouteChildren {
   ImoveisSlugRoute: typeof ImoveisSlugRoute
+  ImoveisIndexRoute: typeof ImoveisIndexRoute
 }
 
 const ImoveisRouteChildren: ImoveisRouteChildren = {
   ImoveisSlugRoute: ImoveisSlugRoute,
+  ImoveisIndexRoute: ImoveisIndexRoute,
 }
 
 const ImoveisRouteWithChildren =
