@@ -95,6 +95,7 @@ function LatestProperties() {
         )
         .eq("published", true)
         .eq("archived", false)
+        .in("status", ["disponivel", "reservado"])
         .order("created_at", { ascending: false })
         .limit(6);
       if (error) throw error;
@@ -141,6 +142,7 @@ function FeaturedProperties() {
         )
         .eq("published", true)
         .eq("archived", false)
+        .in("status", ["disponivel", "reservado"])
         .eq("is_featured", true)
         .order("created_at", { ascending: false })
         .limit(3);

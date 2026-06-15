@@ -75,7 +75,8 @@ function EditarEmpreendimento() {
     };
     const { error } = await supabase.from("developments").update(payload).eq("id", id);
     if (error) { toast.error("Erro ao salvar: " + error.message); return; }
-    toast.success("Empreendimento atualizado!");
+    toast.success("Empreendimento salvo com sucesso");
+    navigate({ to: "/admin/empreendimentos" });
   }
 
   async function handleDelete() {

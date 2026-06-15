@@ -1,9 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { formatPrice, propertyWhatsappLink, SITE } from "@/lib/site";
-import { Bed, Bath, Car, Maximize, MapPin, ArrowLeft, Mail, Phone } from "lucide-react";
+import { Bed, Bath, Car, Maximize, MapPin, ArrowLeft, Mail, Phone, Ruler, X, ChevronLeft, ChevronRight } from "lucide-react";
+
+const FALLBACK_PROPERTY_IMAGE = "/placeholder.svg";
 
 export const Route = createFileRoute("/imoveis/$slug")({
   component: PropertyDetail,
@@ -17,6 +20,8 @@ export const Route = createFileRoute("/imoveis/$slug")({
 
 function PropertyDetail() {
   const { slug } = Route.useParams();
+  const [activeImage, setActiveImage] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const { data, isLoading } = useQuery({
     queryKey: ["property", slug],
     queryFn: async () => {
@@ -48,7 +53,9 @@ function PropertyDetail() {
   }
 
   const gallery = (data.gallery as string[]) || [];
-  const allImages = [data.cover_image, ...gallery].filter(Boolean) as string[];
+  const allImages = ([data.cover_image, ...gallery].filter(Boolean) as string[]).length
+    ? ([data.cover_image, ...gallery].filter(Boolean) as string[])
+    : [FALLBACK_PROPERTY_IMAGE];
   const videos = (data.videos as string[]) || [];
   const agent = (data as any).agent as
     | { id: string; name: string; photo: string | null; phone: string | null; whatsapp: string | null; email: string | null; creci: string | null; active: boolean }
@@ -60,15 +67,17 @@ function PropertyDetail() {
         <Link to="/imoveis" className="mb-6 inline-flex items-center text-sm text-muted-foreground hover:text-foreground">
           <ArrowLeft className="mr-1 h-4 w-4" /> Voltar para imóveis
         </Link>
-        <div className="grid gap-2 md:grid-cols-2">
-          {allImages.slice(0, 4).map((img, i) => (
-            <img key={i} src={img} alt="" loading="lazy" className={`w-full rounded-lg object-cover ${i === 0 ? "md:col-span-2 aspect-[16/9]" : "aspect-[4/3]"}`} />
-          ))}
-          {allImages.length === 0 && (
-            <div className="md:col-span-2 flex aspect-[16/9] items-center justify-center rounded-lg bg-secondary text-muted-foreground">
-              Sem fotos disponíveis
-            </div>
-          )}
+        <div className="grid gap-3 md:grid-cols-[1.5fr_1fr]">
+          <button type="button" onClick={() => { setActiveImage(0); setLightboxOpen(true); }} className="relative overflow-hidden rounded-lg bg-secondary text-left">
+            <img src={allImages[0]} alt={data.title} loading="eager" decoding="async" className="aspect-[16/10] h-full w-full object-cover transition-transform duration-300 hover:scale-105" />
+          </button>
+          <div className="grid grid-cols-2 gap-3">
+            {allImages.slice(1, 5).map((img, i) => (
+              <button key={img} type="button" onClick={() => { setActiveImage(i + 1); setLightboxOpen(true); }} className="overflow-hidden rounded-lg bg-secondary">
+                <img src={img} alt={`${data.title} - foto ${i + 2}`} loading="lazy" decoding="async" className="aspect-[4/3] w-full object-cover transition-transform duration-300 hover:scale-105" />
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="mt-10 grid gap-10 md:grid-cols-[1fr_360px]">
@@ -78,6 +87,11 @@ function PropertyDetail() {
               {[data.neighborhood, data.city].filter(Boolean).join(" · ")} · Ref. {data.reference}
             </p>
             <h1 className="mt-2 text-3xl font-bold md:text-4xl">{data.title}</h1>
+            {(data.status === "vendido" || data.status === "alugado") && (
+              <span className="mt-4 inline-flex rounded bg-destructive px-3 py-1 text-xs font-semibold uppercase tracking-wider text-destructive-foreground">
+                {data.status}
+              </span>
+            )}
             <p className="mt-4 text-3xl font-bold">{formatPrice(data.price)}</p>
             {(data.condo_fee || data.iptu) && (
               <p className="mt-1 text-sm text-muted-foreground">
@@ -91,9 +105,8 @@ function PropertyDetail() {
               {data.bedrooms != null && <Stat icon={Bed} label={data.suites ? `Dorm. (${data.suites} suítes)` : "Dormitórios"} value={data.bedrooms} />}
               {data.bathrooms != null && <Stat icon={Bath} label="Banheiros" value={data.bathrooms} />}
               {data.parking_spaces != null && <Stat icon={Car} label="Vagas" value={data.parking_spaces} />}
-              {(data.built_area || data.total_area) != null && (
-                <Stat icon={Maximize} label={data.built_area ? "Área const." : "Área total"} value={`${data.built_area ?? data.total_area}m²`} />
-              )}
+              {data.built_area != null && <Stat icon={Maximize} label="Área construída" value={`${data.built_area}m²`} />}
+              {data.total_area != null && <Stat icon={Ruler} label="Área total" value={`${data.total_area}m²`} />}
             </div>
 
             {data.description && (
@@ -133,12 +146,27 @@ function PropertyDetail() {
                 </div>
               </div>
             )}
+
+            {(data.address || data.latitude || data.longitude) && (
+              <div className="mt-10">
+                <h2 className="text-xl font-semibold">Localização</h2>
+                <p className="mt-3 text-muted-foreground">{[data.address, data.neighborhood, data.city].filter(Boolean).join(" · ")}</p>
+              </div>
+            )}
           </div>
 
           <aside className="space-y-4">
             <AgentCard agent={agent} propertyTitle={data.title} />
           </aside>
         </div>
+        {lightboxOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4">
+            <button type="button" onClick={() => setLightboxOpen(false)} className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"><X className="h-6 w-6" /></button>
+            <button type="button" onClick={() => setActiveImage((i) => (i === 0 ? allImages.length - 1 : i - 1))} className="absolute left-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"><ChevronLeft className="h-7 w-7" /></button>
+            <img src={allImages[activeImage]} alt={data.title} className="max-h-[90vh] max-w-[90vw] object-contain" />
+            <button type="button" onClick={() => setActiveImage((i) => (i + 1) % allImages.length)} className="absolute right-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"><ChevronRight className="h-7 w-7" /></button>
+          </div>
+        )}
       </section>
     </SiteLayout>
   );

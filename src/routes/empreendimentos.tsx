@@ -15,9 +15,10 @@ function EmpreendimentosPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("developments")
-        .select("*")
+        .select("id,name,slug,description,location,city,neighborhood,cover_image,published,created_at")
         .eq("published", true)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .limit(12);
       if (error) throw error;
       return data;
     },
@@ -46,7 +47,7 @@ function EmpreendimentosPage() {
               <article key={d.id} className="overflow-hidden rounded-lg border border-border bg-card transition-shadow hover:shadow-lg">
                 <Link to="/empreendimento/$slug" params={{ slug: d.slug }}>
                   {d.cover_image ? (
-                    <img src={d.cover_image} alt={d.name} className="aspect-[16/9] w-full object-cover" loading="lazy" />
+                    <img src={d.cover_image} alt={d.name} className="aspect-[16/9] w-full object-cover" loading="lazy" decoding="async" />
                   ) : (
                     <div className="flex aspect-[16/9] items-center justify-center bg-secondary text-muted-foreground">
                       <Building2 className="h-10 w-10" />

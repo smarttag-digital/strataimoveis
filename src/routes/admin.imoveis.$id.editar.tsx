@@ -30,7 +30,8 @@ function EditarImovel() {
   async function handleSubmit(v: PropertyFormValues) {
     const { error } = await supabase.from("properties").update(toPropertyPayload(v)).eq("id", id);
     if (error) { toast.error("Erro ao salvar: " + error.message); return; }
-    toast.success("Alterações salvas.");
+    toast.success("Imóvel salvo com sucesso");
+    navigate({ to: "/admin/imoveis" });
   }
 
   async function handleDelete() {
