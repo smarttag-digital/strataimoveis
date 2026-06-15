@@ -18,8 +18,8 @@ function NovoImovel() {
       toast.error("Erro ao salvar: " + error.message);
       return;
     }
-    toast.success("Imóvel criado!");
-    navigate({ to: "/admin/imoveis/$id/editar", params: { id: data.id } });
+    toast.success("Imóvel salvo com sucesso");
+    navigate({ to: "/admin/imoveis" });
   }
 
   return (

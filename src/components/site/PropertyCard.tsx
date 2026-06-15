@@ -14,6 +14,7 @@ export type PropertyCardData = {
   parking_spaces: number | null;
   built_area: number | null;
   cover_image: string | null;
+  status?: string | null;
   is_featured?: boolean;
   is_new?: boolean;
   is_opportunity?: boolean;
@@ -21,7 +22,15 @@ export type PropertyCardData = {
 };
 
 export function PropertyCard({ p }: { p: PropertyCardData }) {
+  const statusBadge = p.status === "vendido"
+    ? { label: "Vendido", cls: "bg-destructive text-destructive-foreground" }
+    : p.status === "alugado"
+      ? { label: "Alugado", cls: "bg-primary text-primary-foreground" }
+      : p.status === "reservado"
+        ? { label: "Reservado", cls: "bg-[var(--champagne)] text-black" }
+        : null;
   const badges = [
+    statusBadge,
     p.is_launch && { label: "Lançamento", cls: "bg-black text-white" },
     p.is_opportunity && { label: "Oportunidade", cls: "bg-[var(--champagne)] text-black" },
     p.is_new && { label: "Novo", cls: "bg-white text-black border border-border" },
@@ -30,8 +39,8 @@ export function PropertyCard({ p }: { p: PropertyCardData }) {
 
   return (
     <Link
-      to="/imoveis/$slug"
-      params={{ slug: p.slug }}
+      to="/imovel/$ref"
+      params={{ ref: p.slug || p.id }}
       className="group flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-black/5"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
@@ -40,6 +49,7 @@ export function PropertyCard({ p }: { p: PropertyCardData }) {
             src={p.cover_image}
             alt={p.title}
             loading="lazy"
+            decoding="async"
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (

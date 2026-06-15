@@ -2,21 +2,20 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Plus, Pencil, Eye, EyeOff, Star } from "lucide-react";
-import { useRealtimeSync } from "@/hooks/use-realtime-sync";
 
 export const Route = createFileRoute("/admin/empreendimentos/")({
   component: AdminEmpreendimentos,
 });
 
 function AdminEmpreendimentos() {
-  useRealtimeSync(["developments"]);
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["admin-developments"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("developments")
         .select("id,name,slug,city,neighborhood,cover_image,published,is_featured,construction_status,created_at")
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .limit(100);
       if (error) throw error;
       return data as any[];
     },
@@ -58,7 +57,7 @@ function AdminEmpreendimentos() {
               <tr key={d.id} className="border-t border-border">
                 <td className="p-3">
                   <div className="flex items-center gap-3">
-                    {d.cover_image ? <img src={d.cover_image} alt="" className="h-12 w-16 rounded object-cover" /> : <div className="h-12 w-16 rounded bg-secondary" />}
+                    {d.cover_image ? <img src={d.cover_image} alt="" className="h-12 w-16 rounded object-cover" loading="lazy" decoding="async" /> : <div className="h-12 w-16 rounded bg-secondary" />}
                     <span className="font-medium">{d.name}</span>
                   </div>
                 </td>

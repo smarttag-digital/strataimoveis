@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { compressImageForUpload } from "@/lib/image-upload";
 import { Upload, X, Loader2, Trash2 } from "lucide-react";
 
 export type DevelopmentFormValues = {
@@ -75,9 +76,10 @@ export function DevelopmentForm({
     setUploading(true);
     const urls: string[] = [];
     for (const file of Array.from(files)) {
-      const ext = file.name.split(".").pop();
+      const compressed = await compressImageForUpload(file);
+      const ext = compressed.extension;
       const path = `developments/${crypto.randomUUID()}.${ext}`;
-      const { error } = await supabase.storage.from("property-media").upload(path, file, { upsert: false, contentType: file.type });
+      const { error } = await supabase.storage.from("property-media").upload(path, compressed.file, { upsert: false, contentType: compressed.file.type });
       if (!error) {
         const { data } = supabase.storage.from("property-media").getPublicUrl(path);
         urls.push(data.publicUrl);

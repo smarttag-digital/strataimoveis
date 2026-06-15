@@ -37,8 +37,8 @@ function NovoEmpreendimento() {
     };
     const { data, error } = await supabase.from("developments").insert(payload).select("id").single();
     if (error) { toast.error("Erro ao salvar: " + error.message); return; }
-    toast.success("Empreendimento criado!");
-    navigate({ to: "/admin/empreendimentos/$id/editar", params: { id: data.id } });
+    toast.success("Empreendimento salvo com sucesso");
+    navigate({ to: "/admin/empreendimentos" });
   }
   return (
     <div>

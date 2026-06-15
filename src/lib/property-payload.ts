@@ -3,6 +3,7 @@ import type { PropertyFormValues } from "@/components/admin/PropertyForm";
 const num = (s: string) => (s === "" || s == null ? null : Number(s));
 
 export function toPropertyPayload(v: PropertyFormValues) {
+  const isArchivedStatus = v.status === "arquivado";
   return {
     title: v.title,
     description: v.description || null,
@@ -31,7 +32,7 @@ export function toPropertyPayload(v: PropertyFormValues) {
     features: v.features,
     agent_id: v.agent_id || null,
     status: v.status || "disponivel",
-    archived: !!v.archived,
+    archived: isArchivedStatus || !!v.archived,
     published: v.published,
     is_featured: v.is_featured,
     is_launch: v.is_launch,

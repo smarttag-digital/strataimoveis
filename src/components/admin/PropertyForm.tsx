@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { PROPERTY_TYPES } from "@/lib/site";
+import { compressImageForUpload } from "@/lib/image-upload";
 import { Upload, X, Loader2, Trash2 } from "lucide-react";
 
 export type PropertyFormValues = {
@@ -59,7 +60,7 @@ const STATUS_OPTIONS = [
   { value: "reservado", label: "Reservado" },
   { value: "vendido", label: "Vendido" },
   { value: "alugado", label: "Alugado" },
-  { value: "inativo", label: "Inativo" },
+  { value: "arquivado", label: "Arquivado" },
 ];
 
 export function PropertyForm({
@@ -104,11 +105,12 @@ export function PropertyForm({
     setUploading(true);
     const urls: string[] = [];
     for (const file of Array.from(files)) {
-      const ext = file.name.split(".").pop();
+      const compressed = await compressImageForUpload(file);
+      const ext = compressed.extension;
       const path = `properties/${crypto.randomUUID()}.${ext}`;
-      const { error } = await supabase.storage.from("property-media").upload(path, file, {
+      const { error } = await supabase.storage.from("property-media").upload(path, compressed.file, {
         upsert: false,
-        contentType: file.type,
+        contentType: compressed.file.type,
       });
       if (!error) {
         const { data } = supabase.storage.from("property-media").getPublicUrl(path);
