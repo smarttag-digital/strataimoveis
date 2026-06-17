@@ -24,6 +24,9 @@ export const Route = createFileRoute("/")({
           "Casas, apartamentos, terrenos e investimentos em Tatuí. Atendimento consultivo e exclusivo.",
       },
     ],
+    links: [
+      { rel: "preload", as: "image", href: heroImg, fetchpriority: "high" } as never,
+    ],
   }),
   component: HomePage,
 });
