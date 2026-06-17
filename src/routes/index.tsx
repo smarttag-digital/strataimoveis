@@ -52,7 +52,10 @@ function Hero() {
         className="absolute inset-0 -z-10 h-full w-full object-cover"
         width={1920}
         height={1280}
+        fetchPriority="high"
+        decoding="async"
       />
+
       <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black/85 via-black/60 to-black/30" />
       <div className="container-prose py-24 text-white">
         <p className="text-xs uppercase tracking-[0.3em] text-[var(--champagne)]">
