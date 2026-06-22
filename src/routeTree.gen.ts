@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as ImoveisRouteImport } from './routes/imoveis'
 import { Route as EmpreendimentosRouteImport } from './routes/empreendimentos'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as BlogRouteImport } from './routes/blog'
@@ -42,11 +41,6 @@ const SobreRoute = SobreRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ImoveisRoute = ImoveisRouteImport.update({
-  id: '/imoveis',
-  path: '/imoveis',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EmpreendimentosRoute = EmpreendimentosRouteImport.update({
@@ -80,9 +74,9 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const ImoveisIndexRoute = ImoveisIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => ImoveisRoute,
+  id: '/imoveis/',
+  path: '/imoveis/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
@@ -95,9 +89,9 @@ const ImovelRefRoute = ImovelRefRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const ImoveisSlugRoute = ImoveisSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => ImoveisRoute,
+  id: '/imoveis/$slug',
+  path: '/imoveis/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const EmpreendimentoSlugRoute = EmpreendimentoSlugRouteImport.update({
   id: '/empreendimento/$slug',
@@ -165,7 +159,6 @@ export interface FileRoutesByFullPath {
   '/blog': typeof BlogRoute
   '/contato': typeof ContatoRoute
   '/empreendimentos': typeof EmpreendimentosRoute
-  '/imoveis': typeof ImoveisRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/admin/blog': typeof AdminBlogRoute
@@ -216,7 +209,6 @@ export interface FileRoutesById {
   '/blog': typeof BlogRoute
   '/contato': typeof ContatoRoute
   '/empreendimentos': typeof EmpreendimentosRoute
-  '/imoveis': typeof ImoveisRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/admin/blog': typeof AdminBlogRoute
@@ -244,7 +236,6 @@ export interface FileRouteTypes {
     | '/blog'
     | '/contato'
     | '/empreendimentos'
-    | '/imoveis'
     | '/sitemap.xml'
     | '/sobre'
     | '/admin/blog'
@@ -294,7 +285,6 @@ export interface FileRouteTypes {
     | '/blog'
     | '/contato'
     | '/empreendimentos'
-    | '/imoveis'
     | '/sitemap.xml'
     | '/sobre'
     | '/admin/blog'
@@ -321,11 +311,12 @@ export interface RootRouteChildren {
   BlogRoute: typeof BlogRoute
   ContatoRoute: typeof ContatoRoute
   EmpreendimentosRoute: typeof EmpreendimentosRoute
-  ImoveisRoute: typeof ImoveisRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
   EmpreendimentoSlugRoute: typeof EmpreendimentoSlugRoute
+  ImoveisSlugRoute: typeof ImoveisSlugRoute
   ImovelRefRoute: typeof ImovelRefRoute
+  ImoveisIndexRoute: typeof ImoveisIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -342,13 +333,6 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/imoveis': {
-      id: '/imoveis'
-      path: '/imoveis'
-      fullPath: '/imoveis'
-      preLoaderRoute: typeof ImoveisRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/empreendimentos': {
@@ -395,10 +379,10 @@ declare module '@tanstack/react-router' {
     }
     '/imoveis/': {
       id: '/imoveis/'
-      path: '/'
+      path: '/imoveis'
       fullPath: '/imoveis/'
       preLoaderRoute: typeof ImoveisIndexRouteImport
-      parentRoute: typeof ImoveisRoute
+      parentRoute: typeof rootRouteImport
     }
     '/admin/': {
       id: '/admin/'
@@ -416,10 +400,10 @@ declare module '@tanstack/react-router' {
     }
     '/imoveis/$slug': {
       id: '/imoveis/$slug'
-      path: '/$slug'
+      path: '/imoveis/$slug'
       fullPath: '/imoveis/$slug'
       preLoaderRoute: typeof ImoveisSlugRouteImport
-      parentRoute: typeof ImoveisRoute
+      parentRoute: typeof rootRouteImport
     }
     '/empreendimento/$slug': {
       id: '/empreendimento/$slug'
@@ -531,19 +515,6 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
-interface ImoveisRouteChildren {
-  ImoveisSlugRoute: typeof ImoveisSlugRoute
-  ImoveisIndexRoute: typeof ImoveisIndexRoute
-}
-
-const ImoveisRouteChildren: ImoveisRouteChildren = {
-  ImoveisSlugRoute: ImoveisSlugRoute,
-  ImoveisIndexRoute: ImoveisIndexRoute,
-}
-
-const ImoveisRouteWithChildren =
-  ImoveisRoute._addFileChildren(ImoveisRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
@@ -551,22 +522,13 @@ const rootRouteChildren: RootRouteChildren = {
   BlogRoute: BlogRoute,
   ContatoRoute: ContatoRoute,
   EmpreendimentosRoute: EmpreendimentosRoute,
-  ImoveisRoute: ImoveisRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
   EmpreendimentoSlugRoute: EmpreendimentoSlugRoute,
+  ImoveisSlugRoute: ImoveisSlugRoute,
   ImovelRefRoute: ImovelRefRoute,
+  ImoveisIndexRoute: ImoveisIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
