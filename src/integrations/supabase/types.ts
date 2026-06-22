@@ -351,7 +351,15 @@ export type Database = {
           videos?: Json
           virtual_tour_url?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "properties_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       site_settings: {
         Row: {

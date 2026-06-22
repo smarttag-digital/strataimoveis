@@ -1,0 +1,1 @@
+ALTER TABLE public.properties ADD CONSTRAINT properties_agent_id_fkey FOREIGN KEY (agent_id) REFERENCES public.agents(id) ON DELETE SET NULL;
