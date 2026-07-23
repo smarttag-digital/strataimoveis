@@ -4,7 +4,8 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { formatPrice, propertyWhatsappLink, SITE } from "@/lib/site";
-import { Bed, Bath, Car, Maximize, MapPin, ArrowLeft, Mail, Phone, Ruler, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { Bed, Bath, Car, Maximize, MapPin, ArrowLeft, Mail, Phone, Ruler, X, ChevronLeft, ChevronRight, PlayCircle } from "lucide-react";
+import { toVideoEmbed, isValidVideoUrl } from "@/lib/video-url";
 
 const FALLBACK_PROPERTY_IMAGE = "/placeholder.svg";
 
