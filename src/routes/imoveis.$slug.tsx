@@ -242,10 +242,3 @@ function Stat({ icon: Icon, label, value }: { icon: any; label: string; value: a
   );
 }
 
-function toEmbed(url: string) {
-  const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
-  if (yt) return `https://www.youtube.com/embed/${yt[1]}`;
-  const vm = url.match(/vimeo\.com\/(\d+)/);
-  if (vm) return `https://player.vimeo.com/video/${vm[1]}`;
-  return url;
-}
