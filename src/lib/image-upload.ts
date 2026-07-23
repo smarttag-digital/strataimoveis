@@ -1,9 +1,11 @@
+import { applyWatermark, hasWatermarkMarker, WATERMARK_MARKER, type WatermarkSettings } from "./watermark";
+
 const MAX_IMAGE_EDGE = 1800;
 const WEBP_QUALITY = 0.82;
 
-export async function compressImageForUpload(file: File) {
+export async function compressImageForUpload(file: File, watermark?: WatermarkSettings) {
   if (!file.type.startsWith("image/") || file.type === "image/svg+xml") {
-    return { file, extension: file.name.split(".").pop() || "jpg" };
+    return { file, extension: file.name.split(".").pop() || "jpg", watermarked: false };
   }
 
   const bitmap = await createImageBitmap(file);
@@ -15,18 +17,29 @@ export async function compressImageForUpload(file: File) {
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext("2d");
-  if (!ctx) return { file, extension: file.name.split(".").pop() || "jpg" };
+  if (!ctx) return { file, extension: file.name.split(".").pop() || "jpg", watermarked: false };
 
   ctx.drawImage(bitmap, 0, 0, width, height);
   bitmap.close();
+
+  const shouldWatermark =
+    !!watermark?.enabled &&
+    !!watermark.logo_url &&
+    !hasWatermarkMarker(file.name);
+  if (shouldWatermark) {
+    await applyWatermark(canvas, watermark!);
+  }
 
   const blob = await new Promise<Blob | null>((resolve) => {
     canvas.toBlob(resolve, "image/webp", WEBP_QUALITY);
   });
 
-  if (!blob) return { file, extension: file.name.split(".").pop() || "jpg" };
+  if (!blob) return { file, extension: file.name.split(".").pop() || "jpg", watermarked: false };
+  const base = file.name.replace(/\.[^.]+$/, "");
+  const suffix = shouldWatermark ? WATERMARK_MARKER : "";
   return {
-    file: new File([blob], file.name.replace(/\.[^.]+$/, ".webp"), { type: "image/webp" }),
+    file: new File([blob], `${base}${suffix}.webp`, { type: "image/webp" }),
     extension: "webp",
+    watermarked: shouldWatermark,
   };
 }
