@@ -98,6 +98,18 @@ export function PropertyForm({
     },
   });
 
+  const { data: watermark } = useQuery({
+    queryKey: ["site-settings", "watermark"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("site_settings")
+        .select("value")
+        .eq("key", "watermark")
+        .maybeSingle();
+      return { ...defaultWatermark, ...((data?.value as Partial<WatermarkSettings>) ?? {}) } as WatermarkSettings;
+    },
+  });
+
   function up<K extends keyof PropertyFormValues>(k: K, val: PropertyFormValues[K]) {
     setV((s) => ({ ...s, [k]: val }));
   }
@@ -107,7 +119,7 @@ export function PropertyForm({
     setUploading(true);
     const urls: string[] = [];
     for (const file of Array.from(files)) {
-      const compressed = await compressImageForUpload(file);
+      const compressed = await compressImageForUpload(file, watermark);
       const ext = compressed.extension;
       const path = `properties/${crypto.randomUUID()}.${ext}`;
       const { error } = await supabase.storage.from("property-media").upload(path, compressed.file, {
