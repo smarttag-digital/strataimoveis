@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { PROPERTY_TYPES } from "@/lib/site";
 import { compressImageForUpload } from "@/lib/image-upload";
+import { isValidVideoUrl } from "@/lib/video-url";
 import { Upload, X, Loader2, Trash2 } from "lucide-react";
 
 export type PropertyFormValues = {
