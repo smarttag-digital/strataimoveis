@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { PROPERTY_TYPES } from "@/lib/site";
 import { compressImageForUpload } from "@/lib/image-upload";
+import { isValidVideoUrl } from "@/lib/video-url";
 import { Upload, X, Loader2, Trash2 } from "lucide-react";
 
 export type PropertyFormValues = {
@@ -289,11 +290,19 @@ export function PropertyForm({
             ))}
           </div>
           <div className="mt-2 flex gap-2">
-            <input className="input" value={videoInput} onChange={(e) => setVideoInput(e.target.value)} placeholder="https://youtube.com/…" />
+            <input className="input" value={videoInput} onChange={(e) => setVideoInput(e.target.value)} placeholder="https://youtube.com/watch?v=... ou https://youtu.be/..." />
             <button type="button" className="btn-outline" onClick={() => {
-              if (videoInput.trim()) { up("videos", [...v.videos, videoInput.trim()]); setVideoInput(""); }
+              const url = videoInput.trim();
+              if (!url) return;
+              if (!isValidVideoUrl(url)) { alert("URL de vídeo inválida. Use um link do YouTube ou Vimeo."); return; }
+              if (v.videos.includes(url)) { setVideoInput(""); return; }
+              up("videos", [...v.videos, url]);
+              setVideoInput("");
             }}>Adicionar</button>
           </div>
+          {videoInput && !isValidVideoUrl(videoInput.trim()) && (
+            <p className="mt-1 text-xs text-destructive">Formato não reconhecido — cole um link do YouTube ou Vimeo.</p>
+          )}
         </div>
 
         <div className="mt-6">

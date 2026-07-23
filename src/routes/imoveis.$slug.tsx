@@ -4,7 +4,8 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { formatPrice, propertyWhatsappLink, SITE } from "@/lib/site";
-import { Bed, Bath, Car, Maximize, MapPin, ArrowLeft, Mail, Phone, Ruler, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { Bed, Bath, Car, Maximize, MapPin, ArrowLeft, Mail, Phone, Ruler, X, ChevronLeft, ChevronRight, PlayCircle } from "lucide-react";
+import { toVideoEmbed, isValidVideoUrl } from "@/lib/video-url";
 
 const FALLBACK_PROPERTY_IMAGE = "/placeholder.svg";
 
@@ -56,7 +57,7 @@ function PropertyDetail() {
   const allImages = ([data.cover_image, ...gallery].filter(Boolean) as string[]).length
     ? ([data.cover_image, ...gallery].filter(Boolean) as string[])
     : [FALLBACK_PROPERTY_IMAGE];
-  const videos = (data.videos as string[]) || [];
+  const videos = ((data.videos as string[]) || []).filter(isValidVideoUrl);
   const agent = (data as any).agent as
     | { id: string; name: string; photo: string | null; phone: string | null; whatsapp: string | null; email: string | null; creci: string | null; active: boolean }
     | null;
@@ -100,6 +101,11 @@ function PropertyDetail() {
                 {data.iptu ? `IPTU ${formatPrice(data.iptu)}/ano` : null}
               </p>
             )}
+            {videos.length > 0 && (
+              <a href="#videos" className="mt-4 inline-flex items-center gap-2 rounded border border-border px-4 py-2 text-sm font-medium hover:bg-secondary">
+                <PlayCircle className="h-4 w-4" /> Assistir vídeo
+              </a>
+            )}
 
             <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
               {data.bedrooms != null && <Stat icon={Bed} label={data.suites ? `Dorm. (${data.suites} suítes)` : "Dormitórios"} value={data.bedrooms} />}
@@ -126,12 +132,12 @@ function PropertyDetail() {
             )}
 
             {videos.length > 0 && (
-              <div className="mt-10">
+              <div id="videos" className="mt-10 scroll-mt-24">
                 <h2 className="text-xl font-semibold">Vídeos</h2>
                 <div className="mt-3 grid gap-4 sm:grid-cols-2">
                   {videos.map((u) => (
                     <div key={u} className="aspect-video overflow-hidden rounded-lg bg-black">
-                      <iframe src={toEmbed(u)} className="h-full w-full" allow="autoplay; fullscreen" />
+                      <iframe src={toVideoEmbed(u)} className="h-full w-full" allow="autoplay; fullscreen; encrypted-media" allowFullScreen title="Vídeo do imóvel" />
                     </div>
                   ))}
                 </div>
@@ -236,10 +242,3 @@ function Stat({ icon: Icon, label, value }: { icon: any; label: string; value: a
   );
 }
 
-function toEmbed(url: string) {
-  const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
-  if (yt) return `https://www.youtube.com/embed/${yt[1]}`;
-  const vm = url.match(/vimeo\.com\/(\d+)/);
-  if (vm) return `https://player.vimeo.com/video/${vm[1]}`;
-  return url;
-}
