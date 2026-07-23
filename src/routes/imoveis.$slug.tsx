@@ -132,12 +132,12 @@ function PropertyDetail() {
             )}
 
             {videos.length > 0 && (
-              <div className="mt-10">
+              <div id="videos" className="mt-10 scroll-mt-24">
                 <h2 className="text-xl font-semibold">Vídeos</h2>
                 <div className="mt-3 grid gap-4 sm:grid-cols-2">
                   {videos.map((u) => (
                     <div key={u} className="aspect-video overflow-hidden rounded-lg bg-black">
-                      <iframe src={toEmbed(u)} className="h-full w-full" allow="autoplay; fullscreen" />
+                      <iframe src={toVideoEmbed(u)} className="h-full w-full" allow="autoplay; fullscreen; encrypted-media" allowFullScreen title="Vídeo do imóvel" />
                     </div>
                   ))}
                 </div>
