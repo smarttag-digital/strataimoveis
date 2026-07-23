@@ -57,7 +57,7 @@ function PropertyDetail() {
   const allImages = ([data.cover_image, ...gallery].filter(Boolean) as string[]).length
     ? ([data.cover_image, ...gallery].filter(Boolean) as string[])
     : [FALLBACK_PROPERTY_IMAGE];
-  const videos = (data.videos as string[]) || [];
+  const videos = ((data.videos as string[]) || []).filter(isValidVideoUrl);
   const agent = (data as any).agent as
     | { id: string; name: string; photo: string | null; phone: string | null; whatsapp: string | null; email: string | null; creci: string | null; active: boolean }
     | null;
