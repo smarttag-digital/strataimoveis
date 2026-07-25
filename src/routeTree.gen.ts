@@ -30,6 +30,7 @@ import { Route as AdminImoveisIndexRouteImport } from './routes/admin.imoveis.in
 import { Route as AdminEmpreendimentosIndexRouteImport } from './routes/admin.empreendimentos.index'
 import { Route as AdminImoveisNovoRouteImport } from './routes/admin.imoveis.novo'
 import { Route as AdminEmpreendimentosNovoRouteImport } from './routes/admin.empreendimentos.novo'
+import { Route as ApiPublicCrmLeadsRouteImport } from './routes/api/public/crm/leads'
 import { Route as AdminImoveisIdEditarRouteImport } from './routes/admin.imoveis.$id.editar'
 import { Route as AdminEmpreendimentosIdEditarRouteImport } from './routes/admin.empreendimentos.$id.editar'
 
@@ -140,6 +141,11 @@ const AdminEmpreendimentosNovoRoute =
     path: '/empreendimentos/novo',
     getParentRoute: () => AdminRoute,
   } as any)
+const ApiPublicCrmLeadsRoute = ApiPublicCrmLeadsRouteImport.update({
+  id: '/api/public/crm/leads',
+  path: '/api/public/crm/leads',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminImoveisIdEditarRoute = AdminImoveisIdEditarRouteImport.update({
   id: '/imoveis/$id/editar',
   path: '/imoveis/$id/editar',
@@ -176,6 +182,7 @@ export interface FileRoutesByFullPath {
   '/admin/imoveis/': typeof AdminImoveisIndexRoute
   '/admin/empreendimentos/$id/editar': typeof AdminEmpreendimentosIdEditarRoute
   '/admin/imoveis/$id/editar': typeof AdminImoveisIdEditarRoute
+  '/api/public/crm/leads': typeof ApiPublicCrmLeadsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -200,6 +207,7 @@ export interface FileRoutesByTo {
   '/admin/imoveis': typeof AdminImoveisIndexRoute
   '/admin/empreendimentos/$id/editar': typeof AdminEmpreendimentosIdEditarRoute
   '/admin/imoveis/$id/editar': typeof AdminImoveisIdEditarRoute
+  '/api/public/crm/leads': typeof ApiPublicCrmLeadsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -226,6 +234,7 @@ export interface FileRoutesById {
   '/admin/imoveis/': typeof AdminImoveisIndexRoute
   '/admin/empreendimentos/$id/editar': typeof AdminEmpreendimentosIdEditarRoute
   '/admin/imoveis/$id/editar': typeof AdminImoveisIdEditarRoute
+  '/api/public/crm/leads': typeof ApiPublicCrmLeadsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -253,6 +262,7 @@ export interface FileRouteTypes {
     | '/admin/imoveis/'
     | '/admin/empreendimentos/$id/editar'
     | '/admin/imoveis/$id/editar'
+    | '/api/public/crm/leads'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -277,6 +287,7 @@ export interface FileRouteTypes {
     | '/admin/imoveis'
     | '/admin/empreendimentos/$id/editar'
     | '/admin/imoveis/$id/editar'
+    | '/api/public/crm/leads'
   id:
     | '__root__'
     | '/'
@@ -302,6 +313,7 @@ export interface FileRouteTypes {
     | '/admin/imoveis/'
     | '/admin/empreendimentos/$id/editar'
     | '/admin/imoveis/$id/editar'
+    | '/api/public/crm/leads'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -317,6 +329,7 @@ export interface RootRouteChildren {
   ImoveisSlugRoute: typeof ImoveisSlugRoute
   ImovelRefRoute: typeof ImovelRefRoute
   ImoveisIndexRoute: typeof ImoveisIndexRoute
+  ApiPublicCrmLeadsRoute: typeof ApiPublicCrmLeadsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -468,6 +481,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEmpreendimentosNovoRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/api/public/crm/leads': {
+      id: '/api/public/crm/leads'
+      path: '/api/public/crm/leads'
+      fullPath: '/api/public/crm/leads'
+      preLoaderRoute: typeof ApiPublicCrmLeadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/imoveis/$id/editar': {
       id: '/admin/imoveis/$id/editar'
       path: '/imoveis/$id/editar'
@@ -528,6 +548,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImoveisSlugRoute: ImoveisSlugRoute,
   ImovelRefRoute: ImovelRefRoute,
   ImoveisIndexRoute: ImoveisIndexRoute,
+  ApiPublicCrmLeadsRoute: ApiPublicCrmLeadsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
