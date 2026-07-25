@@ -81,6 +81,10 @@ export function PropertyForm({
   const [uploading, setUploading] = useState(false);
   const [featureInput, setFeatureInput] = useState("");
   const [videoInput, setVideoInput] = useState("");
+  const [skipWatermark, setSkipWatermark] = useState<{ cover: boolean; gallery: boolean }>({
+    cover: false,
+    gallery: false,
+  });
 
   useEffect(() => {
     if (initial) setV({ ...emptyProperty, ...initial });
