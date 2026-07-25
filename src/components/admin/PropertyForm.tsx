@@ -121,9 +121,10 @@ export function PropertyForm({
   async function handleUpload(files: FileList | null, target: "cover" | "gallery") {
     if (!files || files.length === 0) return;
     setUploading(true);
+    const wm = skipWatermark[target] ? undefined : watermark;
     const urls: string[] = [];
     for (const file of Array.from(files)) {
-      const compressed = await compressImageForUpload(file, watermark);
+      const compressed = await compressImageForUpload(file, wm);
       const ext = compressed.extension;
       const path = `properties/${crypto.randomUUID()}.${ext}`;
       const { error } = await supabase.storage.from("property-media").upload(path, compressed.file, {
