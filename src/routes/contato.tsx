@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { syncLeadToCrm } from "@/lib/crm.functions";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { whatsappLink } from "@/lib/site";
 import { CheckCircle2 } from "lucide-react";
@@ -13,22 +15,30 @@ function ContatoPage() {
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const pushLead = useServerFn(syncLeadToCrm);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
     setLoading(true);
     const fd = new FormData(e.currentTarget);
-    const { error } = await supabase.from("leads").insert({
-      name: String(fd.get("name") || ""),
-      phone: String(fd.get("phone") || ""),
-      email: String(fd.get("email") || ""),
-      message: String(fd.get("message") || ""),
-      source: "contato",
-    });
+    const { data: lead, error } = await supabase
+      .from("leads")
+      .insert({
+        name: String(fd.get("name") || ""),
+        phone: String(fd.get("phone") || ""),
+        email: String(fd.get("email") || ""),
+        message: String(fd.get("message") || ""),
+        source: "contato",
+      })
+      .select("id")
+      .maybeSingle();
     setLoading(false);
     if (error) setError("Não foi possível enviar. Tente novamente.");
-    else setSent(true);
+    else {
+      setSent(true);
+      if (lead?.id) void pushLead({ data: { leadId: lead.id } }).catch(() => {});
+    }
   }
 
   return (

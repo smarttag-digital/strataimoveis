@@ -2,7 +2,7 @@ import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-rout
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo-leticia-souza.png";
-import { LogOut, Home, MessageSquare, Building2, BookOpen, Settings, Building, Users } from "lucide-react";
+import { LogOut, Home, MessageSquare, Building2, BookOpen, Settings, Building, Users, RefreshCw } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
@@ -69,6 +69,7 @@ function AdminLayout() {
           <NavItem to="/admin/empreendimentos" icon={Building} label="Empreendimentos" />
           <NavItem to="/admin/corretores" icon={Users} label="Corretores" />
           <NavItem to="/admin/leads" icon={MessageSquare} label="Leads" />
+          <NavItem to="/admin/crm" icon={RefreshCw} label="CRM SmartFlow" />
           <NavItem to="/admin/blog" icon={BookOpen} label="Blog" />
           <NavItem to="/admin/configuracoes" icon={Settings} label="Configurações" />
         </nav>

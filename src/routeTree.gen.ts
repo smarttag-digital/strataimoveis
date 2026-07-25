@@ -23,6 +23,7 @@ import { Route as ImovelRefRouteImport } from './routes/imovel.$ref'
 import { Route as ImoveisSlugRouteImport } from './routes/imoveis.$slug'
 import { Route as EmpreendimentoSlugRouteImport } from './routes/empreendimento.$slug'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
+import { Route as AdminCrmRouteImport } from './routes/admin.crm'
 import { Route as AdminCorretoresRouteImport } from './routes/admin.corretores'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
 import { Route as AdminBlogRouteImport } from './routes/admin.blog'
@@ -30,6 +31,9 @@ import { Route as AdminImoveisIndexRouteImport } from './routes/admin.imoveis.in
 import { Route as AdminEmpreendimentosIndexRouteImport } from './routes/admin.empreendimentos.index'
 import { Route as AdminImoveisNovoRouteImport } from './routes/admin.imoveis.novo'
 import { Route as AdminEmpreendimentosNovoRouteImport } from './routes/admin.empreendimentos.novo'
+import { Route as ApiPublicCrmLeadsRouteImport } from './routes/api/public/crm/leads'
+import { Route as ApiPublicCrmImoveisRouteImport } from './routes/api/public/crm/imoveis'
+import { Route as ApiPublicCrmEmpreendimentosRouteImport } from './routes/api/public/crm/empreendimentos'
 import { Route as AdminImoveisIdEditarRouteImport } from './routes/admin.imoveis.$id.editar'
 import { Route as AdminEmpreendimentosIdEditarRouteImport } from './routes/admin.empreendimentos.$id.editar'
 
@@ -103,6 +107,11 @@ const AdminLeadsRoute = AdminLeadsRouteImport.update({
   path: '/leads',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminCrmRoute = AdminCrmRouteImport.update({
+  id: '/crm',
+  path: '/crm',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminCorretoresRoute = AdminCorretoresRouteImport.update({
   id: '/corretores',
   path: '/corretores',
@@ -140,6 +149,22 @@ const AdminEmpreendimentosNovoRoute =
     path: '/empreendimentos/novo',
     getParentRoute: () => AdminRoute,
   } as any)
+const ApiPublicCrmLeadsRoute = ApiPublicCrmLeadsRouteImport.update({
+  id: '/api/public/crm/leads',
+  path: '/api/public/crm/leads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicCrmImoveisRoute = ApiPublicCrmImoveisRouteImport.update({
+  id: '/api/public/crm/imoveis',
+  path: '/api/public/crm/imoveis',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicCrmEmpreendimentosRoute =
+  ApiPublicCrmEmpreendimentosRouteImport.update({
+    id: '/api/public/crm/empreendimentos',
+    path: '/api/public/crm/empreendimentos',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AdminImoveisIdEditarRoute = AdminImoveisIdEditarRouteImport.update({
   id: '/imoveis/$id/editar',
   path: '/imoveis/$id/editar',
@@ -164,6 +189,7 @@ export interface FileRoutesByFullPath {
   '/admin/blog': typeof AdminBlogRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/corretores': typeof AdminCorretoresRoute
+  '/admin/crm': typeof AdminCrmRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/empreendimento/$slug': typeof EmpreendimentoSlugRoute
   '/imoveis/$slug': typeof ImoveisSlugRoute
@@ -176,6 +202,9 @@ export interface FileRoutesByFullPath {
   '/admin/imoveis/': typeof AdminImoveisIndexRoute
   '/admin/empreendimentos/$id/editar': typeof AdminEmpreendimentosIdEditarRoute
   '/admin/imoveis/$id/editar': typeof AdminImoveisIdEditarRoute
+  '/api/public/crm/empreendimentos': typeof ApiPublicCrmEmpreendimentosRoute
+  '/api/public/crm/imoveis': typeof ApiPublicCrmImoveisRoute
+  '/api/public/crm/leads': typeof ApiPublicCrmLeadsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -188,6 +217,7 @@ export interface FileRoutesByTo {
   '/admin/blog': typeof AdminBlogRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/corretores': typeof AdminCorretoresRoute
+  '/admin/crm': typeof AdminCrmRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/empreendimento/$slug': typeof EmpreendimentoSlugRoute
   '/imoveis/$slug': typeof ImoveisSlugRoute
@@ -200,6 +230,9 @@ export interface FileRoutesByTo {
   '/admin/imoveis': typeof AdminImoveisIndexRoute
   '/admin/empreendimentos/$id/editar': typeof AdminEmpreendimentosIdEditarRoute
   '/admin/imoveis/$id/editar': typeof AdminImoveisIdEditarRoute
+  '/api/public/crm/empreendimentos': typeof ApiPublicCrmEmpreendimentosRoute
+  '/api/public/crm/imoveis': typeof ApiPublicCrmImoveisRoute
+  '/api/public/crm/leads': typeof ApiPublicCrmLeadsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -214,6 +247,7 @@ export interface FileRoutesById {
   '/admin/blog': typeof AdminBlogRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/corretores': typeof AdminCorretoresRoute
+  '/admin/crm': typeof AdminCrmRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/empreendimento/$slug': typeof EmpreendimentoSlugRoute
   '/imoveis/$slug': typeof ImoveisSlugRoute
@@ -226,6 +260,9 @@ export interface FileRoutesById {
   '/admin/imoveis/': typeof AdminImoveisIndexRoute
   '/admin/empreendimentos/$id/editar': typeof AdminEmpreendimentosIdEditarRoute
   '/admin/imoveis/$id/editar': typeof AdminImoveisIdEditarRoute
+  '/api/public/crm/empreendimentos': typeof ApiPublicCrmEmpreendimentosRoute
+  '/api/public/crm/imoveis': typeof ApiPublicCrmImoveisRoute
+  '/api/public/crm/leads': typeof ApiPublicCrmLeadsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -241,6 +278,7 @@ export interface FileRouteTypes {
     | '/admin/blog'
     | '/admin/configuracoes'
     | '/admin/corretores'
+    | '/admin/crm'
     | '/admin/leads'
     | '/empreendimento/$slug'
     | '/imoveis/$slug'
@@ -253,6 +291,9 @@ export interface FileRouteTypes {
     | '/admin/imoveis/'
     | '/admin/empreendimentos/$id/editar'
     | '/admin/imoveis/$id/editar'
+    | '/api/public/crm/empreendimentos'
+    | '/api/public/crm/imoveis'
+    | '/api/public/crm/leads'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -265,6 +306,7 @@ export interface FileRouteTypes {
     | '/admin/blog'
     | '/admin/configuracoes'
     | '/admin/corretores'
+    | '/admin/crm'
     | '/admin/leads'
     | '/empreendimento/$slug'
     | '/imoveis/$slug'
@@ -277,6 +319,9 @@ export interface FileRouteTypes {
     | '/admin/imoveis'
     | '/admin/empreendimentos/$id/editar'
     | '/admin/imoveis/$id/editar'
+    | '/api/public/crm/empreendimentos'
+    | '/api/public/crm/imoveis'
+    | '/api/public/crm/leads'
   id:
     | '__root__'
     | '/'
@@ -290,6 +335,7 @@ export interface FileRouteTypes {
     | '/admin/blog'
     | '/admin/configuracoes'
     | '/admin/corretores'
+    | '/admin/crm'
     | '/admin/leads'
     | '/empreendimento/$slug'
     | '/imoveis/$slug'
@@ -302,6 +348,9 @@ export interface FileRouteTypes {
     | '/admin/imoveis/'
     | '/admin/empreendimentos/$id/editar'
     | '/admin/imoveis/$id/editar'
+    | '/api/public/crm/empreendimentos'
+    | '/api/public/crm/imoveis'
+    | '/api/public/crm/leads'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -317,6 +366,9 @@ export interface RootRouteChildren {
   ImoveisSlugRoute: typeof ImoveisSlugRoute
   ImovelRefRoute: typeof ImovelRefRoute
   ImoveisIndexRoute: typeof ImoveisIndexRoute
+  ApiPublicCrmEmpreendimentosRoute: typeof ApiPublicCrmEmpreendimentosRoute
+  ApiPublicCrmImoveisRoute: typeof ApiPublicCrmImoveisRoute
+  ApiPublicCrmLeadsRoute: typeof ApiPublicCrmLeadsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -419,6 +471,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLeadsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/crm': {
+      id: '/admin/crm'
+      path: '/crm'
+      fullPath: '/admin/crm'
+      preLoaderRoute: typeof AdminCrmRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/corretores': {
       id: '/admin/corretores'
       path: '/corretores'
@@ -468,6 +527,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEmpreendimentosNovoRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/api/public/crm/leads': {
+      id: '/api/public/crm/leads'
+      path: '/api/public/crm/leads'
+      fullPath: '/api/public/crm/leads'
+      preLoaderRoute: typeof ApiPublicCrmLeadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/crm/imoveis': {
+      id: '/api/public/crm/imoveis'
+      path: '/api/public/crm/imoveis'
+      fullPath: '/api/public/crm/imoveis'
+      preLoaderRoute: typeof ApiPublicCrmImoveisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/crm/empreendimentos': {
+      id: '/api/public/crm/empreendimentos'
+      path: '/api/public/crm/empreendimentos'
+      fullPath: '/api/public/crm/empreendimentos'
+      preLoaderRoute: typeof ApiPublicCrmEmpreendimentosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/imoveis/$id/editar': {
       id: '/admin/imoveis/$id/editar'
       path: '/imoveis/$id/editar'
@@ -489,6 +569,7 @@ interface AdminRouteChildren {
   AdminBlogRoute: typeof AdminBlogRoute
   AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
   AdminCorretoresRoute: typeof AdminCorretoresRoute
+  AdminCrmRoute: typeof AdminCrmRoute
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminEmpreendimentosNovoRoute: typeof AdminEmpreendimentosNovoRoute
@@ -503,6 +584,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminBlogRoute: AdminBlogRoute,
   AdminConfiguracoesRoute: AdminConfiguracoesRoute,
   AdminCorretoresRoute: AdminCorretoresRoute,
+  AdminCrmRoute: AdminCrmRoute,
   AdminLeadsRoute: AdminLeadsRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminEmpreendimentosNovoRoute: AdminEmpreendimentosNovoRoute,
@@ -528,6 +610,9 @@ const rootRouteChildren: RootRouteChildren = {
   ImoveisSlugRoute: ImoveisSlugRoute,
   ImovelRefRoute: ImovelRefRoute,
   ImoveisIndexRoute: ImoveisIndexRoute,
+  ApiPublicCrmEmpreendimentosRoute: ApiPublicCrmEmpreendimentosRoute,
+  ApiPublicCrmImoveisRoute: ApiPublicCrmImoveisRoute,
+  ApiPublicCrmLeadsRoute: ApiPublicCrmLeadsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
