@@ -2,7 +2,7 @@ import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-rout
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo-leticia-souza.png";
-import { LogOut, Home, MessageSquare, Building2, BookOpen, Settings, Building, Users } from "lucide-react";
+import { LogOut, Home, MessageSquare, Building2, BookOpen, Settings, Building, Users, RefreshCw } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
