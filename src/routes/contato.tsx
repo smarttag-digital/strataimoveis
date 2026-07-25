@@ -19,16 +19,23 @@ function ContatoPage() {
     setError(null);
     setLoading(true);
     const fd = new FormData(e.currentTarget);
-    const { error } = await supabase.from("leads").insert({
-      name: String(fd.get("name") || ""),
-      phone: String(fd.get("phone") || ""),
-      email: String(fd.get("email") || ""),
-      message: String(fd.get("message") || ""),
-      source: "contato",
-    });
+    const { data: lead, error } = await supabase
+      .from("leads")
+      .insert({
+        name: String(fd.get("name") || ""),
+        phone: String(fd.get("phone") || ""),
+        email: String(fd.get("email") || ""),
+        message: String(fd.get("message") || ""),
+        source: "contato",
+      })
+      .select("id")
+      .maybeSingle();
     setLoading(false);
     if (error) setError("Não foi possível enviar. Tente novamente.");
-    else setSent(true);
+    else {
+      setSent(true);
+      if (lead?.id) void pushLead({ data: { leadId: lead.id } }).catch(() => {});
+    }
   }
 
   return (
