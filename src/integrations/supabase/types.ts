@@ -107,6 +107,36 @@ export type Database = {
         }
         Relationships: []
       }
+      crm_sync_log: {
+        Row: {
+          created_at: string
+          detail: string | null
+          direction: string
+          entity: string
+          entity_id: string | null
+          id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          detail?: string | null
+          direction: string
+          entity: string
+          entity_id?: string | null
+          id?: string
+          status: string
+        }
+        Update: {
+          created_at?: string
+          detail?: string | null
+          direction?: string
+          entity?: string
+          entity_id?: string | null
+          id?: string
+          status?: string
+        }
+        Relationships: []
+      }
       developments: {
         Row: {
           address: string | null
@@ -197,6 +227,10 @@ export type Database = {
       leads: {
         Row: {
           created_at: string
+          crm_error: string | null
+          crm_external_id: string | null
+          crm_status: string
+          crm_synced_at: string | null
           email: string | null
           id: string
           message: string | null
@@ -204,9 +238,14 @@ export type Database = {
           phone: string | null
           property_interest: string | null
           source: string | null
+          updated_at: string
         }
         Insert: {
           created_at?: string
+          crm_error?: string | null
+          crm_external_id?: string | null
+          crm_status?: string
+          crm_synced_at?: string | null
           email?: string | null
           id?: string
           message?: string | null
@@ -214,9 +253,14 @@ export type Database = {
           phone?: string | null
           property_interest?: string | null
           source?: string | null
+          updated_at?: string
         }
         Update: {
           created_at?: string
+          crm_error?: string | null
+          crm_external_id?: string | null
+          crm_status?: string
+          crm_synced_at?: string | null
           email?: string | null
           id?: string
           message?: string | null
@@ -224,6 +268,7 @@ export type Database = {
           phone?: string | null
           property_interest?: string | null
           source?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
