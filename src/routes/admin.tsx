@@ -69,6 +69,7 @@ function AdminLayout() {
           <NavItem to="/admin/empreendimentos" icon={Building} label="Empreendimentos" />
           <NavItem to="/admin/corretores" icon={Users} label="Corretores" />
           <NavItem to="/admin/leads" icon={MessageSquare} label="Leads" />
+          <NavItem to="/admin/crm" icon={RefreshCw} label="CRM SmartFlow" />
           <NavItem to="/admin/blog" icon={BookOpen} label="Blog" />
           <NavItem to="/admin/configuracoes" icon={Settings} label="Configurações" />
         </nav>

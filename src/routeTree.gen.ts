@@ -23,6 +23,7 @@ import { Route as ImovelRefRouteImport } from './routes/imovel.$ref'
 import { Route as ImoveisSlugRouteImport } from './routes/imoveis.$slug'
 import { Route as EmpreendimentoSlugRouteImport } from './routes/empreendimento.$slug'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
+import { Route as AdminCrmRouteImport } from './routes/admin.crm'
 import { Route as AdminCorretoresRouteImport } from './routes/admin.corretores'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin.configuracoes'
 import { Route as AdminBlogRouteImport } from './routes/admin.blog'
@@ -106,6 +107,11 @@ const AdminLeadsRoute = AdminLeadsRouteImport.update({
   path: '/leads',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminCrmRoute = AdminCrmRouteImport.update({
+  id: '/crm',
+  path: '/crm',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminCorretoresRoute = AdminCorretoresRouteImport.update({
   id: '/corretores',
   path: '/corretores',
@@ -183,6 +189,7 @@ export interface FileRoutesByFullPath {
   '/admin/blog': typeof AdminBlogRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/corretores': typeof AdminCorretoresRoute
+  '/admin/crm': typeof AdminCrmRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/empreendimento/$slug': typeof EmpreendimentoSlugRoute
   '/imoveis/$slug': typeof ImoveisSlugRoute
@@ -210,6 +217,7 @@ export interface FileRoutesByTo {
   '/admin/blog': typeof AdminBlogRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/corretores': typeof AdminCorretoresRoute
+  '/admin/crm': typeof AdminCrmRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/empreendimento/$slug': typeof EmpreendimentoSlugRoute
   '/imoveis/$slug': typeof ImoveisSlugRoute
@@ -239,6 +247,7 @@ export interface FileRoutesById {
   '/admin/blog': typeof AdminBlogRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
   '/admin/corretores': typeof AdminCorretoresRoute
+  '/admin/crm': typeof AdminCrmRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/empreendimento/$slug': typeof EmpreendimentoSlugRoute
   '/imoveis/$slug': typeof ImoveisSlugRoute
@@ -269,6 +278,7 @@ export interface FileRouteTypes {
     | '/admin/blog'
     | '/admin/configuracoes'
     | '/admin/corretores'
+    | '/admin/crm'
     | '/admin/leads'
     | '/empreendimento/$slug'
     | '/imoveis/$slug'
@@ -296,6 +306,7 @@ export interface FileRouteTypes {
     | '/admin/blog'
     | '/admin/configuracoes'
     | '/admin/corretores'
+    | '/admin/crm'
     | '/admin/leads'
     | '/empreendimento/$slug'
     | '/imoveis/$slug'
@@ -324,6 +335,7 @@ export interface FileRouteTypes {
     | '/admin/blog'
     | '/admin/configuracoes'
     | '/admin/corretores'
+    | '/admin/crm'
     | '/admin/leads'
     | '/empreendimento/$slug'
     | '/imoveis/$slug'
@@ -459,6 +471,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLeadsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/crm': {
+      id: '/admin/crm'
+      path: '/crm'
+      fullPath: '/admin/crm'
+      preLoaderRoute: typeof AdminCrmRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/corretores': {
       id: '/admin/corretores'
       path: '/corretores'
@@ -550,6 +569,7 @@ interface AdminRouteChildren {
   AdminBlogRoute: typeof AdminBlogRoute
   AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
   AdminCorretoresRoute: typeof AdminCorretoresRoute
+  AdminCrmRoute: typeof AdminCrmRoute
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminEmpreendimentosNovoRoute: typeof AdminEmpreendimentosNovoRoute
@@ -564,6 +584,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminBlogRoute: AdminBlogRoute,
   AdminConfiguracoesRoute: AdminConfiguracoesRoute,
   AdminCorretoresRoute: AdminCorretoresRoute,
+  AdminCrmRoute: AdminCrmRoute,
   AdminLeadsRoute: AdminLeadsRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminEmpreendimentosNovoRoute: AdminEmpreendimentosNovoRoute,
