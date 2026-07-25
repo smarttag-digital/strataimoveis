@@ -81,6 +81,10 @@ export function PropertyForm({
   const [uploading, setUploading] = useState(false);
   const [featureInput, setFeatureInput] = useState("");
   const [videoInput, setVideoInput] = useState("");
+  const [skipWatermark, setSkipWatermark] = useState<{ cover: boolean; gallery: boolean }>({
+    cover: false,
+    gallery: false,
+  });
 
   useEffect(() => {
     if (initial) setV({ ...emptyProperty, ...initial });
@@ -117,9 +121,10 @@ export function PropertyForm({
   async function handleUpload(files: FileList | null, target: "cover" | "gallery") {
     if (!files || files.length === 0) return;
     setUploading(true);
+    const wm = skipWatermark[target] ? undefined : watermark;
     const urls: string[] = [];
     for (const file of Array.from(files)) {
-      const compressed = await compressImageForUpload(file, watermark);
+      const compressed = await compressImageForUpload(file, wm);
       const ext = compressed.extension;
       const path = `properties/${crypto.randomUUID()}.${ext}`;
       const { error } = await supabase.storage.from("property-media").upload(path, compressed.file, {
@@ -272,8 +277,14 @@ export function PropertyForm({
               <button type="button" onClick={() => up("cover_image", "")} className="absolute -right-2 -top-2 rounded-full bg-black p-1 text-white"><X className="h-3 w-3" /></button>
             </div>
           )}
-          <div className="mt-2">
+          <div className="mt-2 flex flex-wrap items-center gap-3">
             <UploadBtn onChange={(f) => handleUpload(f, "cover")} disabled={uploading} label="Selecionar capa" />
+            {watermark?.enabled && watermark.logo_url && (
+              <SkipWatermark
+                checked={skipWatermark.cover}
+                onChange={(b) => setSkipWatermark((s) => ({ ...s, cover: b }))}
+              />
+            )}
           </div>
         </div>
 
@@ -287,8 +298,14 @@ export function PropertyForm({
               </div>
             ))}
           </div>
-          <div className="mt-2">
+          <div className="mt-2 flex flex-wrap items-center gap-3">
             <UploadBtn onChange={(f) => handleUpload(f, "gallery")} disabled={uploading} label="Adicionar fotos" multiple />
+            {watermark?.enabled && watermark.logo_url && (
+              <SkipWatermark
+                checked={skipWatermark.gallery}
+                onChange={(b) => setSkipWatermark((s) => ({ ...s, gallery: b }))}
+              />
+            )}
           </div>
         </div>
 
@@ -400,6 +417,14 @@ function UploadBtn({ onChange, label, disabled, multiple }: { onChange: (f: File
     <label className={`inline-flex cursor-pointer items-center gap-2 rounded border border-dashed border-border px-4 py-2 text-sm hover:bg-secondary ${disabled ? "opacity-50" : ""}`}>
       <Upload className="h-4 w-4" /> {label}
       <input type="file" className="hidden" accept="image/*" multiple={multiple} onChange={(e) => onChange(e.target.files)} disabled={disabled} />
+    </label>
+  );
+}
+function SkipWatermark({ checked, onChange }: { checked: boolean; onChange: (b: boolean) => void }) {
+  return (
+    <label className="inline-flex cursor-pointer items-center gap-2 text-xs text-muted-foreground">
+      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} />
+      Não aplicar logomarca nestes arquivos
     </label>
   );
 }
