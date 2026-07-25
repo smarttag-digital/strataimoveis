@@ -277,8 +277,14 @@ export function PropertyForm({
               <button type="button" onClick={() => up("cover_image", "")} className="absolute -right-2 -top-2 rounded-full bg-black p-1 text-white"><X className="h-3 w-3" /></button>
             </div>
           )}
-          <div className="mt-2">
+          <div className="mt-2 flex flex-wrap items-center gap-3">
             <UploadBtn onChange={(f) => handleUpload(f, "cover")} disabled={uploading} label="Selecionar capa" />
+            {watermark?.enabled && watermark.logo_url && (
+              <SkipWatermark
+                checked={skipWatermark.cover}
+                onChange={(b) => setSkipWatermark((s) => ({ ...s, cover: b }))}
+              />
+            )}
           </div>
         </div>
 
@@ -292,8 +298,14 @@ export function PropertyForm({
               </div>
             ))}
           </div>
-          <div className="mt-2">
+          <div className="mt-2 flex flex-wrap items-center gap-3">
             <UploadBtn onChange={(f) => handleUpload(f, "gallery")} disabled={uploading} label="Adicionar fotos" multiple />
+            {watermark?.enabled && watermark.logo_url && (
+              <SkipWatermark
+                checked={skipWatermark.gallery}
+                onChange={(b) => setSkipWatermark((s) => ({ ...s, gallery: b }))}
+              />
+            )}
           </div>
         </div>
 
