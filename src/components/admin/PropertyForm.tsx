@@ -420,3 +420,11 @@ function UploadBtn({ onChange, label, disabled, multiple }: { onChange: (f: File
     </label>
   );
 }
+function SkipWatermark({ checked, onChange }: { checked: boolean; onChange: (b: boolean) => void }) {
+  return (
+    <label className="inline-flex cursor-pointer items-center gap-2 text-xs text-muted-foreground">
+      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} />
+      Não aplicar logomarca nestes arquivos
+    </label>
+  );
+}
