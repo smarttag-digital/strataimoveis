@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { syncLeadToCrm } from "@/lib/crm.functions";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { whatsappLink } from "@/lib/site";
 import { CheckCircle2 } from "lucide-react";
