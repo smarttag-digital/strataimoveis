@@ -80,6 +80,19 @@ export function PropertyCard({ p }: { p: PropertyCardData }) {
           {p.parking_spaces != null && <span className="flex items-center gap-1"><Car className="h-4 w-4" />{p.parking_spaces}</span>}
           {p.built_area != null && <span className="flex items-center gap-1"><Maximize className="h-4 w-4" />{p.built_area}m²</span>}
         </div>
+        {canSchedule(p) && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              window.open(schedulingLink(p), "_blank", "noopener,noreferrer");
+            }}
+            className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded border border-border px-3 py-2 text-sm font-medium transition-colors hover:bg-secondary"
+          >
+            <CalendarDays className="h-4 w-4" /> Agendar visita
+          </button>
+        )}
       </div>
     </Link>
   );
