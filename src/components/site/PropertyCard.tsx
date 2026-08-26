@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { Bed, Bath, Car, Maximize } from "lucide-react";
+import { Bed, Bath, Car, Maximize, CalendarDays } from "lucide-react";
 import { formatPrice } from "@/lib/site";
+import { canSchedule, schedulingLink } from "@/lib/scheduling";
 
 export type PropertyCardData = {
   id: string;
