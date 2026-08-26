@@ -178,6 +178,18 @@ function PropertyDetail() {
             <AgentCard agent={agent} propertyTitle={data.title} />
           </aside>
         </div>
+        {canSchedule(data) && (
+          <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 p-3 pr-24 backdrop-blur md:hidden">
+            <a
+              href={schedulingLink(data)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary flex w-full items-center justify-center gap-2"
+            >
+              <CalendarDays className="h-4 w-4" /> Agendar visita
+            </a>
+          </div>
+        )}
         {lightboxOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4">
             <button type="button" onClick={() => setLightboxOpen(false)} className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"><X className="h-6 w-6" /></button>
