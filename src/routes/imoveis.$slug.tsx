@@ -4,8 +4,9 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { formatPrice, propertyWhatsappLink, SITE } from "@/lib/site";
-import { Bed, Bath, Car, Maximize, MapPin, ArrowLeft, Mail, Phone, Ruler, X, ChevronLeft, ChevronRight, PlayCircle } from "lucide-react";
+import { Bed, Bath, Car, Maximize, MapPin, ArrowLeft, Mail, Phone, Ruler, X, ChevronLeft, ChevronRight, PlayCircle, CalendarDays } from "lucide-react";
 import { toVideoEmbed, isValidVideoUrl } from "@/lib/video-url";
+import { canSchedule, schedulingLink } from "@/lib/scheduling";
 
 const FALLBACK_PROPERTY_IMAGE = "/placeholder.svg";
 
@@ -101,11 +102,23 @@ function PropertyDetail() {
                 {data.iptu ? `IPTU ${formatPrice(data.iptu)}/ano` : null}
               </p>
             )}
-            {videos.length > 0 && (
-              <a href="#videos" className="mt-4 inline-flex items-center gap-2 rounded border border-border px-4 py-2 text-sm font-medium hover:bg-secondary">
-                <PlayCircle className="h-4 w-4" /> Assistir vídeo
-              </a>
-            )}
+            <div className="mt-5 flex flex-wrap gap-3">
+              {canSchedule(data) && (
+                <a
+                  href={schedulingLink(data)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-primary inline-flex items-center gap-2"
+                >
+                  <CalendarDays className="h-4 w-4" /> Agendar visita
+                </a>
+              )}
+              {videos.length > 0 && (
+                <a href="#videos" className="inline-flex items-center gap-2 rounded border border-border px-4 py-2 text-sm font-medium hover:bg-secondary">
+                  <PlayCircle className="h-4 w-4" /> Assistir vídeo
+                </a>
+              )}
+            </div>
 
             <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
               {data.bedrooms != null && <Stat icon={Bed} label={data.suites ? `Dorm. (${data.suites} suítes)` : "Dormitórios"} value={data.bedrooms} />}
@@ -165,6 +178,18 @@ function PropertyDetail() {
             <AgentCard agent={agent} propertyTitle={data.title} />
           </aside>
         </div>
+        {canSchedule(data) && (
+          <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 p-3 pr-24 backdrop-blur md:hidden">
+            <a
+              href={schedulingLink(data)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary flex w-full items-center justify-center gap-2"
+            >
+              <CalendarDays className="h-4 w-4" /> Agendar visita
+            </a>
+          </div>
+        )}
         {lightboxOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4">
             <button type="button" onClick={() => setLightboxOpen(false)} className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"><X className="h-6 w-6" /></button>

@@ -99,7 +99,10 @@ function ImoveisPage() {
           <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Busca de imóveis</p>
           <h1 className="mt-2 text-3xl font-bold md:text-4xl">Encontre seu próximo lar ou investimento</h1>
           <div className="mt-6">
-            <SearchBar variant="inline" initial={initial} />
+            <SearchBar
+              variant="inline"
+              initial={{ ...initial, transaction: (initial.transaction === "venda" || initial.transaction === "aluguel" ? initial.transaction : "") }}
+            />
           </div>
         </div>
       </section>
