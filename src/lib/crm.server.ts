@@ -13,8 +13,10 @@ export type CrmLeadPayload = {
   origin: "strataimoveis";
 };
 
+const DEFAULT_WEBHOOK_URL = "https://crmptedybiwxacympmdp.supabase.co/functions/v1/webhook-leads";
+
 export function crmWebhookUrl() {
-  return process.env.SMARTFLOW_WEBHOOK_URL || "";
+  return process.env.SMARTFLOW_WEBHOOK_URL || DEFAULT_WEBHOOK_URL;
 }
 
 export function crmWebhookSecret() {
