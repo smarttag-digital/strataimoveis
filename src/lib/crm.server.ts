@@ -57,15 +57,42 @@ export function authorizeCrmRequest(request: Request) {
   return null;
 }
 
+/** Converte um lead do portal no formato aceito pelo webhook do SmartFlow. */
+export function toSmartflowLead(lead: Record<string, any>) {
+  return {
+    nome: lead.name ?? "",
+    email: lead.email || null,
+    telefone: lead.phone || null,
+    tipo_de_negocio: lead.deal_type || null,
+    tipo_de_imovel: lead.property_type || null,
+    valor: lead.price ?? null,
+    cidade: lead.city || null,
+    bairro: lead.neighborhood || null,
+    observacoes: [lead.message, lead.property_interest ? `Imóvel: ${lead.property_interest}` : null]
+      .filter(Boolean)
+      .join(" | ") || null,
+    origem: lead.source ? `site:${lead.source}` : "site",
+    idempotency_key: lead.id,
+  };
+}
+
 /** POST a payload to the SmartFlow webhook with an HMAC signature. */
 export async function postToCrm(event: string, payload: unknown) {
   const url = crmWebhookUrl();
   if (!url) return { ok: false as const, status: 0, detail: "SMARTFLOW_WEBHOOK_URL não configurada" };
 
-  const body = JSON.stringify({ event, sent_at: new Date().toISOString(), data: payload });
+  // O webhook de leads espera o payload plano; demais eventos usam o envelope.
+  const isLead = event === "lead.created";
+  const body = JSON.stringify(
+    isLead
+      ? toSmartflowLead(payload as Record<string, any>)
+      : { event, sent_at: new Date().toISOString(), data: payload },
+  );
   const secret = crmWebhookSecret();
+  const token = process.env.SMARTFLOW_API_TOKEN || "";
   const headers: Record<string, string> = { "content-type": "application/json" };
   if (secret) headers["x-smartflow-signature"] = signBody(body, secret);
+  if (token) headers["authorization"] = `Bearer ${token}`;
 
   try {
     const res = await fetch(url, { method: "POST", headers, body });
