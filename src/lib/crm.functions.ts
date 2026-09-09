@@ -4,6 +4,59 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const leadIdSchema = z.object({ leadId: z.string().uuid() });
 
+const newLeadSchema = z.object({
+  name: z.string().trim().min(1).max(200),
+  phone: z.string().trim().max(40).optional(),
+  email: z.string().trim().max(320).optional(),
+  message: z.string().trim().max(4000).optional(),
+  property_interest: z.string().trim().max(200).optional(),
+  source: z.string().trim().max(60).optional(),
+});
+
+/** Registra um lead do site e já envia ao CRM. Público (formulários do portal). */
+export const submitLead = createServerFn({ method: "POST" })
+  .inputValidator((input) => newLeadSchema.parse(input))
+  .handler(async ({ data }) => {
+    const { postToCrm } = await import("@/lib/crm.server");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: lead, error } = await supabaseAdmin
+      .from("leads")
+      .insert({
+        name: data.name,
+        phone: data.phone || null,
+        email: data.email || null,
+        message: data.message || null,
+        property_interest: data.property_interest || null,
+        source: data.source || "site",
+      })
+      .select("id,name,phone,email,message,property_interest,source,created_at")
+      .maybeSingle();
+
+    if (error || !lead) return { ok: false as const };
+
+    const result = await postToCrm("lead.created", { ...lead, origin: "strataimoveis" });
+
+    await supabaseAdmin
+      .from("leads")
+      .update({
+        crm_status: result.ok ? "synced" : "error",
+        crm_synced_at: result.ok ? new Date().toISOString() : null,
+        crm_error: result.ok ? null : result.detail,
+      })
+      .eq("id", lead.id);
+
+    await supabaseAdmin.from("crm_sync_log").insert({
+      direction: "outbound",
+      entity: "lead",
+      entity_id: lead.id,
+      status: result.ok ? "success" : "error",
+      detail: result.detail || null,
+    });
+
+    return { ok: true as const, crm: result.ok };
+  });
+
 /**
  * Envia um lead recém-criado para o CRM SmartFlow.
  * Público (chamado logo após o formulário), mas só lê o lead pelo id e nunca devolve dados sensíveis.
