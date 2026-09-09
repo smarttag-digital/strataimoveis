@@ -59,21 +59,25 @@ export function authorizeCrmRequest(request: Request) {
 
 /** Converte um lead do portal no formato aceito pelo webhook do SmartFlow. */
 export function toSmartflowLead(lead: Record<string, any>) {
-  return {
+  const observacoes = [lead.message, lead.property_interest ? `Imóvel: ${lead.property_interest}` : null]
+    .filter(Boolean)
+    .join(" | ");
+
+  const payload: Record<string, unknown> = {
     nome: lead.name ?? "",
-    email: lead.email || null,
-    telefone: lead.phone || null,
-    tipo_de_negocio: lead.deal_type || null,
-    tipo_de_imovel: lead.property_type || null,
-    valor: lead.price ?? null,
-    cidade: lead.city || null,
-    bairro: lead.neighborhood || null,
-    observacoes: [lead.message, lead.property_interest ? `Imóvel: ${lead.property_interest}` : null]
-      .filter(Boolean)
-      .join(" | ") || null,
     origem: lead.source ? `site:${lead.source}` : "site",
     idempotency_key: lead.id,
   };
+  // O CRM rejeita campos enviados como nulos — só incluímos o que tem valor.
+  if (lead.email) payload.email = lead.email;
+  if (lead.phone) payload.telefone = lead.phone;
+  if (lead.deal_type) payload.tipo_de_negocio = lead.deal_type;
+  if (lead.property_type) payload.tipo_de_imovel = lead.property_type;
+  if (typeof lead.price === "number") payload.valor = lead.price;
+  if (lead.city) payload.cidade = lead.city;
+  if (lead.neighborhood) payload.bairro = lead.neighborhood;
+  if (observacoes) payload.observacoes = observacoes;
+  return payload;
 }
 
 /** POST a payload to the SmartFlow webhook with an HMAC signature. */
