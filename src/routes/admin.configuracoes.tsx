@@ -3,8 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Upload, X } from "lucide-react";
+import { Loader2, Upload, X, Trash2 } from "lucide-react";
 import { defaultWatermark, type WatermarkSettings, type WatermarkPosition } from "@/lib/watermark";
+import { defaultEditorialVideo, defaultRealtorProfile, type EditorialVideo, type RealtorProfile } from "@/lib/site-settings";
 
 export const Route = createFileRoute("/admin/configuracoes")({
   component: Configuracoes,
@@ -14,11 +15,13 @@ type Contact = { phone: string; whatsapp: string; email: string; creci: string; 
 type Social = { instagram: string; facebook: string; tiktok: string; youtube: string; whatsapp: string };
 type About = { title: string; body: string };
 type Features = { blog_enabled: boolean };
+type Regions = { items: string[] };
 
 const emptyContact: Contact = { phone: "", whatsapp: "", email: "", creci: "", address: "" };
 const emptySocial: Social = { instagram: "", facebook: "", tiktok: "", youtube: "", whatsapp: "" };
 const emptyAbout: About = { title: "", body: "" };
 const defaultFeatures: Features = { blog_enabled: true };
+const defaultRegions: Regions = { items: ["Tatuí", "Boituva", "Cerquilho", "Cesário Lange", "Tietê", "Itapetininga"] };
 
 const POSITIONS: { value: WatermarkPosition; label: string }[] = [
   { value: "top-left", label: "Superior esquerda" },
@@ -45,9 +48,13 @@ function Configuracoes() {
   const [social, setSocial] = useState<Social>(emptySocial);
   const [about, setAbout] = useState<About>(emptyAbout);
   const [features, setFeatures] = useState<Features>(defaultFeatures);
+  const [realtor, setRealtor] = useState<RealtorProfile>(defaultRealtorProfile);
+  const [editorialVideo, setEditorialVideo] = useState<EditorialVideo>(defaultEditorialVideo);
+  const [regions, setRegions] = useState<Regions>(defaultRegions);
   const [watermark, setWatermark] = useState<WatermarkSettings>(defaultWatermark);
   const [saving, setSaving] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
   useEffect(() => {
     if (data) {
@@ -55,6 +62,9 @@ function Configuracoes() {
       setSocial({ ...emptySocial, ...(data.social_links ?? {}) });
       setAbout({ ...emptyAbout, ...(data.about ?? {}) });
       setFeatures({ ...defaultFeatures, ...(data.features ?? {}) });
+      setRealtor({ ...defaultRealtorProfile, ...(data.realtor_profile ?? {}) });
+      setEditorialVideo({ ...defaultEditorialVideo, ...(data.editorial_video ?? {}) });
+      setRegions({ ...defaultRegions, ...(data.service_regions ?? {}) });
       setWatermark({ ...defaultWatermark, ...(data.watermark ?? {}) });
     }
   }, [data]);
@@ -78,6 +88,25 @@ function Configuracoes() {
     }
   }
 
+  async function uploadRealtorPhoto(file: File) {
+    setUploadingPhoto(true);
+    try {
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `agents/profile-${Date.now()}.${ext}`;
+      const { error } = await supabase.storage.from("property-media").upload(path, file, {
+        upsert: true, contentType: file.type,
+      });
+      if (error) throw error;
+      const { data: pub } = supabase.storage.from("property-media").getPublicUrl(path);
+      setRealtor((current) => ({ ...current, photo: pub.publicUrl }));
+      toast.success("Foto carregada. Clique em Salvar para aplicar.");
+    } catch (error) {
+      toast.error(`Erro no upload: ${error instanceof Error ? error.message : "tente novamente"}`);
+    } finally {
+      setUploadingPhoto(false);
+    }
+  }
+
   async function save() {
     setSaving(true);
     const upserts = [
@@ -85,6 +114,9 @@ function Configuracoes() {
       supabase.from("site_settings").upsert({ key: "social_links", value: social }),
       supabase.from("site_settings").upsert({ key: "about", value: about }),
       supabase.from("site_settings").upsert({ key: "features", value: features }),
+      supabase.from("site_settings").upsert({ key: "realtor_profile", value: realtor }),
+      supabase.from("site_settings").upsert({ key: "editorial_video", value: editorialVideo }),
+      supabase.from("site_settings").upsert({ key: "service_regions", value: regions }),
       supabase.from("site_settings").upsert({ key: "watermark", value: watermark }),
     ];
     const results = await Promise.all(upserts);
@@ -112,6 +144,48 @@ function Configuracoes() {
             className="h-5 w-5"
           />
         </label>
+      </Card>
+
+      <Card title="Quem Sou / Corretora">
+        <div className="grid gap-6 md:grid-cols-[180px_1fr]">
+          <div>
+            <span className="mb-2 block text-xs font-medium text-muted-foreground">Foto da corretora</span>
+            {realtor.photo ? (
+              <div className="relative aspect-[4/5] overflow-hidden rounded border border-border bg-secondary">
+                <img src={realtor.photo} alt="Preview da corretora" className="h-full w-full object-cover" />
+                <button type="button" aria-label="Excluir foto" onClick={() => setRealtor({ ...realtor, photo: "" })} className="absolute right-2 top-2 rounded-full bg-primary p-2 text-primary-foreground">
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            ) : <div className="grid aspect-[4/5] place-items-center rounded border border-dashed border-border text-center text-xs text-muted-foreground">Nenhuma foto definida</div>}
+            <label className={`mt-3 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded border border-border px-3 py-2 text-sm hover:bg-secondary ${uploadingPhoto ? "opacity-50" : ""}`}>
+              {uploadingPhoto ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />} {realtor.photo ? "Substituir foto" : "Enviar foto"}
+              <input type="file" className="hidden" accept="image/jpeg,image/png,image/webp" disabled={uploadingPhoto} onChange={(e) => { const file = e.target.files?.[0]; if (file) uploadRealtorPhoto(file); e.currentTarget.value = ""; }} />
+            </label>
+          </div>
+          <Grid>
+            <F label="Nome"><input className="input" value={realtor.name} onChange={(e) => setRealtor({ ...realtor, name: e.target.value })} /></F>
+            <F label="CRECI"><input className="input" value={realtor.creci} onChange={(e) => setRealtor({ ...realtor, creci: e.target.value })} /></F>
+            <F label="WhatsApp (DDI+DDD, só números)" className="md:col-span-2"><input className="input" value={realtor.whatsapp} onChange={(e) => setRealtor({ ...realtor, whatsapp: e.target.value })} /></F>
+            <F label="Região de atuação" className="md:col-span-2"><input className="input" value={realtor.region} onChange={(e) => setRealtor({ ...realtor, region: e.target.value })} /></F>
+            <F label="Mini biografia" className="md:col-span-2"><textarea className="input min-h-32" value={realtor.bio} onChange={(e) => setRealtor({ ...realtor, bio: e.target.value })} /></F>
+          </Grid>
+        </div>
+      </Card>
+
+      <Card title="Vídeo em destaque">
+        <Grid>
+          <F label="URL do vídeo (YouTube)" className="md:col-span-2"><input className="input" value={editorialVideo.url} onChange={(e) => setEditorialVideo({ ...editorialVideo, url: e.target.value })} placeholder="https://youtube.com/watch?v=…" /></F>
+          <F label="Título"><input className="input" value={editorialVideo.title} onChange={(e) => setEditorialVideo({ ...editorialVideo, title: e.target.value })} /></F>
+          <F label="Imóvel relacionado"><input className="input" value={editorialVideo.property} onChange={(e) => setEditorialVideo({ ...editorialVideo, property: e.target.value })} /></F>
+          <F label="Descrição" className="md:col-span-2"><textarea className="input min-h-24" value={editorialVideo.description} onChange={(e) => setEditorialVideo({ ...editorialVideo, description: e.target.value })} /></F>
+        </Grid>
+      </Card>
+
+      <Card title="Regiões atendidas">
+        <F label="Cidades e regiões (uma por linha)">
+          <textarea className="input min-h-36" value={regions.items.join("\n")} onChange={(e) => setRegions({ items: e.target.value.split("\n").map((item) => item.trim()).filter(Boolean) })} />
+        </F>
       </Card>
 
       <Card title="Logomarca automática nas fotos">

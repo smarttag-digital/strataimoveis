@@ -1,8 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import logo from "@/assets/logo-leticia-souza.png";
-import { Menu, X } from "lucide-react";
+import { Menu, X, MessageCircle } from "lucide-react";
 import { useFeatures } from "@/lib/site-settings";
+import { whatsappLink } from "@/lib/site";
 
 const baseLinks = [
   { to: "/", label: "Início" },
@@ -22,11 +23,11 @@ export function Header() {
     contactLink,
   ];
   return (
-    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur">
-      <div className="container-prose flex h-20 items-center justify-between">
+    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/92 backdrop-blur-md">
+      <div className="container-prose grid h-20 grid-cols-[minmax(0,1fr)_auto] items-center gap-4 lg:flex lg:justify-between">
         <Link to="/" className="flex items-center gap-3" aria-label="Letícia Souza Imóveis">
           <img src={logo} alt="Letícia Souza" className="h-12 w-auto" width={48} height={48} />
-          <span className="hidden text-sm font-semibold tracking-wide sm:inline">
+          <span className="hidden text-sm font-semibold tracking-[0.08em] sm:inline">
             LETÍCIA SOUZA
             <span className="block text-[10px] font-normal tracking-[0.2em] text-muted-foreground">
               NEGÓCIOS IMOBILIÁRIOS
@@ -45,7 +46,10 @@ export function Header() {
             </Link>
           ))}
         </nav>
-        <button onClick={() => setOpen((v) => !v)} className="lg:hidden" aria-label="Menu">
+        <div className="hidden items-center gap-4 lg:flex">
+          <a href={whatsappLink()} target="_blank" rel="noreferrer" className="btn-primary gap-2"><MessageCircle className="h-4 w-4" /> Falar com Letícia</a>
+        </div>
+        <button onClick={() => setOpen((v) => !v)} className="grid h-11 w-11 place-items-center lg:hidden" aria-label="Menu">
           {open ? <X /> : <Menu />}
         </button>
       </div>

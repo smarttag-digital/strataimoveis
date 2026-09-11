@@ -75,7 +75,7 @@ export function SearchBar({ variant = "hero", initial }: Props) {
 
   const container =
     variant === "hero"
-      ? "rounded-2xl bg-white/95 backdrop-blur-md p-5 shadow-2xl shadow-black/30 ring-1 ring-white/30"
+      ? "rounded-md border border-border bg-card/95 p-4 shadow-xl shadow-primary/5 backdrop-blur-md"
       : "rounded-xl bg-card p-4 shadow-md border border-border";
 
   return (
@@ -116,7 +116,7 @@ export function SearchBar({ variant = "hero", initial }: Props) {
         />
         <button
           type="submit"
-          className="row-span-2 hidden h-full items-center justify-center rounded-xl bg-[var(--champagne)] px-8 text-sm font-semibold uppercase tracking-wider text-black transition-all hover:bg-black hover:text-white lg:flex"
+          className="row-span-2 hidden h-full items-center justify-center rounded bg-primary px-8 text-sm font-semibold uppercase tracking-wider text-primary-foreground transition-all hover:bg-accent hover:text-accent-foreground lg:flex"
         >
           <Search className="mr-2 h-4 w-4" /> Pesquisar
         </button>
@@ -152,7 +152,7 @@ export function SearchBar({ variant = "hero", initial }: Props) {
             <button
               type="button"
               onClick={() => setShowRef(true)}
-              className="flex h-full w-full items-center justify-end pr-1 text-sm font-medium text-[var(--champagne)] hover:underline"
+              className="flex h-full w-full items-center justify-end pr-1 text-sm font-medium text-accent hover:underline"
             >
               <Search className="mr-2 h-4 w-4" /> Buscar por referência
             </button>
@@ -162,7 +162,7 @@ export function SearchBar({ variant = "hero", initial }: Props) {
 
       <button
         type="submit"
-        className="mt-3 flex w-full items-center justify-center rounded-xl bg-[var(--champagne)] px-8 py-3 text-sm font-semibold uppercase tracking-wider text-black transition-all hover:bg-black hover:text-white lg:hidden"
+        className="mt-3 flex w-full items-center justify-center rounded bg-primary px-8 py-3 text-sm font-semibold uppercase tracking-wider text-primary-foreground transition-all hover:bg-accent hover:text-accent-foreground lg:hidden"
       >
         <Search className="mr-2 h-4 w-4" /> Pesquisar
       </button>
@@ -182,7 +182,7 @@ function SelectField({
   options: { value: string; label: string }[];
 }) {
   return (
-    <label className="relative flex flex-col gap-1 rounded-lg border border-border/60 bg-white px-4 py-2 transition-colors focus-within:border-[var(--champagne)]">
+    <label className="relative flex flex-col gap-1 rounded border border-border/60 bg-background px-4 py-2 transition-colors focus-within:border-accent">
       <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
         {label}
       </span>
@@ -220,7 +220,7 @@ function InputField({
   autoFocus?: boolean;
 }) {
   return (
-    <label className="flex flex-col gap-1 rounded-lg border border-border/60 bg-white px-4 py-2 transition-colors focus-within:border-[var(--champagne)]">
+    <label className="flex flex-col gap-1 rounded border border-border/60 bg-background px-4 py-2 transition-colors focus-within:border-accent">
       <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
         {label}
       </span>
