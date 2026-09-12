@@ -109,23 +109,6 @@ export function Footer() {
         </div>
       </footer>
 
-      {/* Sticky mobile social bar */}
-      {items.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 z-30 grid grid-cols-5 border-t border-border bg-background/95 backdrop-blur md:hidden">
-          {items.slice(0, 5).map(({ key, url, label, Icon }) => (
-            <a
-              key={key}
-              href={url}
-              target="_blank"
-              rel="noreferrer"
-              aria-label={label}
-              className="flex items-center justify-center py-3 text-foreground/80"
-            >
-              <Icon className="h-5 w-5" />
-            </a>
-          ))}
-        </div>
-      )}
     </>
   );
 }
