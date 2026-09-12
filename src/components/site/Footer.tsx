@@ -60,15 +60,15 @@ export function Footer() {
 
   return (
     <>
-      <footer className="mt-24 bg-[#0a0a0a] text-white">
+       <footer className="mt-24 bg-primary text-primary-foreground">
         <div className="container-prose grid gap-12 py-16 md:grid-cols-[2fr_1fr]">
           <div>
             <img src={logo} alt={SITE.name} className="h-20 w-auto" />
-            <p className="mt-4 max-w-md text-sm text-white/70">
+             <p className="mt-4 max-w-md text-sm text-primary-foreground/70">
               Especialista em conectar pessoas às melhores oportunidades imobiliárias em
               Tatuí e região — para morar, investir e construir patrimônio.
             </p>
-            <p className="mt-4 text-xs uppercase tracking-[0.2em] text-[var(--champagne)]">
+             <p className="mt-4 text-xs uppercase tracking-[0.2em] text-accent">
               {SITE.creci}
             </p>
             {items.length > 0 && (
@@ -80,7 +80,7 @@ export function Footer() {
                     target="_blank"
                     rel="noreferrer"
                     aria-label={label}
-                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white/80 transition-all hover:border-[var(--champagne)] hover:bg-[var(--champagne)] hover:text-black"
+                     className="flex h-10 w-10 items-center justify-center rounded-full border border-primary-foreground/15 text-primary-foreground/80 transition-all hover:border-accent hover:bg-accent hover:text-accent-foreground"
                   >
                     <Icon className="h-4 w-4" />
                   </a>
@@ -89,10 +89,10 @@ export function Footer() {
             )}
           </div>
           <div>
-            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-[var(--champagne)]">
+             <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-accent">
               Navegação
             </h4>
-            <ul className="space-y-2 text-sm text-white/70">
+             <ul className="space-y-2 text-sm text-primary-foreground/70">
               <li><Link to="/imoveis">Imóveis</Link></li>
               <li><Link to="/empreendimentos">Empreendimentos</Link></li>
               <li><Link to="/sobre">Sobre</Link></li>
@@ -101,10 +101,10 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        <div className="border-t border-white/10">
-          <div className="container-prose flex flex-col items-center justify-between gap-2 py-6 text-xs text-white/50 md:flex-row">
+         <div className="border-t border-primary-foreground/10">
+           <div className="container-prose flex flex-col items-center justify-between gap-2 py-6 text-xs text-primary-foreground/50 md:flex-row">
             <p>© 2026 {SITE.name}. Todos os direitos reservados.</p>
-            <p>Desenvolvido por <span className="text-[var(--champagne)] font-medium">{SITE.developer}</span>.</p>
+             <p>Desenvolvido por <span className="font-medium text-accent">{SITE.developer}</span>.</p>
           </div>
         </div>
       </footer>

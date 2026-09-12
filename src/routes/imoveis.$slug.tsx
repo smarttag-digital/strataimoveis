@@ -3,8 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteLayout } from "@/components/site/SiteLayout";
-import { formatPrice, propertyWhatsappLink, SITE } from "@/lib/site";
-import { Bed, Bath, Car, Maximize, MapPin, ArrowLeft, Mail, Phone, Ruler, X, ChevronLeft, ChevronRight, PlayCircle, CalendarDays } from "lucide-react";
+import { formatPrice, propertyWhatsappLink } from "@/lib/site";
+import { useRealtorProfile } from "@/lib/site-settings";
+import { Bed, Bath, Car, Maximize, MapPin, ArrowLeft, Ruler, X, ChevronLeft, ChevronRight, PlayCircle, CalendarDays } from "lucide-react";
 import { toVideoEmbed, isValidVideoUrl } from "@/lib/video-url";
 import { canSchedule, schedulingLink } from "@/lib/scheduling";
 
@@ -204,13 +205,12 @@ function PropertyDetail() {
 }
 
 function AgentCard({ agent, propertyTitle }: { agent: any; propertyTitle: string }) {
+  const { data: owner } = useRealtorProfile();
   const useAgent = agent && agent.active;
-  const name = useAgent ? agent.name : "Letícia Souza";
-  const photo = useAgent ? agent.photo : null;
-  const phone = useAgent ? agent.phone : SITE.phone;
-  const whatsapp = useAgent ? agent.whatsapp || agent.phone?.replace(/\D/g, "") : SITE.whatsapp;
-  const email = useAgent ? agent.email : SITE.email;
-  const creci = useAgent ? agent.creci : SITE.creci;
+  const name = useAgent ? agent.name : owner?.name || "Letícia Souza";
+  const photo = useAgent ? agent.photo : owner?.photo || null;
+  const whatsapp = useAgent ? agent.whatsapp || agent.phone?.replace(/\D/g, "") : owner?.whatsapp;
+  const creci = useAgent ? agent.creci : owner?.creci;
 
   const waLink = whatsapp
     ? `https://wa.me/${String(whatsapp).replace(/\D/g, "")}?text=${encodeURIComponent(
@@ -219,18 +219,18 @@ function AgentCard({ agent, propertyTitle }: { agent: any; propertyTitle: string
     : propertyWhatsappLink(propertyTitle);
 
   return (
-    <div className="sticky top-24 rounded-lg border border-border bg-card p-6">
+    <div className="sticky top-24 border border-border bg-card p-6">
       <div className="flex items-center gap-3">
         {photo ? (
-          <img src={photo} alt={name} className="h-14 w-14 rounded-full object-cover" />
+          <img src={photo} alt={name} className="h-16 w-16 rounded-full object-cover" />
         ) : (
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--champagne)] text-lg font-bold text-black">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent text-lg font-semibold text-accent-foreground">
             {name.charAt(0)}
           </div>
         )}
         <div>
-          <p className="text-xs uppercase tracking-wider text-muted-foreground">Corretor responsável</p>
-          <p className="font-semibold">{name}</p>
+           <p className="text-xs uppercase tracking-wider text-muted-foreground">Corretora responsável</p>
+           <p className="text-lg font-medium">{name}</p>
           {creci && <p className="text-xs text-muted-foreground">{creci}</p>}
         </div>
       </div>
@@ -239,20 +239,6 @@ function AgentCard({ agent, propertyTitle }: { agent: any; propertyTitle: string
         Falar com {name.split(" ")[0]} no WhatsApp
       </a>
 
-      <div className="mt-4 space-y-2 text-sm">
-        {phone && (
-          <a href={`tel:${String(phone).replace(/\D/g, "")}`} className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
-            <Phone className="h-4 w-4" /> {phone}
-          </a>
-        )}
-        {email && (
-          <a href={`mailto:${email}`} className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
-            <Mail className="h-4 w-4" /> {email}
-          </a>
-        )}
-      </div>
-
-      <Link to="/contato" className="btn-outline mt-4 w-full">Enviar mensagem</Link>
     </div>
   );
 }
@@ -260,7 +246,7 @@ function AgentCard({ agent, propertyTitle }: { agent: any; propertyTitle: string
 function Stat({ icon: Icon, label, value }: { icon: any; label: string; value: any }) {
   return (
     <div className="rounded-lg border border-border bg-card p-4">
-      <Icon className="h-5 w-5 text-[var(--champagne)]" />
+      <Icon className="h-5 w-5 text-accent" />
       <p className="mt-2 text-xs text-muted-foreground">{label}</p>
       <p className="text-lg font-semibold">{value}</p>
     </div>
