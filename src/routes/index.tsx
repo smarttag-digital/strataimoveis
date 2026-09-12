@@ -222,10 +222,11 @@ function OwnerLeadModal({ onClose }: { onClose: () => void }) {
 
 function EditorialVideoSection() {
   const { data } = useSetting("editorial_video", defaultEditorialVideo);
-  const embed = data?.url ? toVideoEmbed(data.url) : null;
+  const video = data ?? defaultEditorialVideo;
+  const embed = video.url ? toVideoEmbed(video.url) : null;
   if (!embed) return null;
   return (
-    <section className="bg-primary py-28 text-primary-foreground md:py-36"><div className="container-prose grid items-center gap-12 md:grid-cols-[0.72fr_1.28fr]"><div><Play className="h-8 w-8 text-accent" /><p className="mt-8 text-xs uppercase tracking-[0.25em] text-accent">Em destaque</p><h2 className="mt-4 text-5xl leading-none md:text-6xl">{data.title}</h2><p className="mt-6 leading-7 text-primary-foreground/65">{data.description}</p>{data.property && <p className="mt-6 text-sm">{data.property}</p>}</div><div className="aspect-video overflow-hidden"><iframe src={embed} title={data.title} loading="lazy" className="h-full w-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen /></div></div></section>
+    <section className="bg-primary py-28 text-primary-foreground md:py-36"><div className="container-prose grid items-center gap-12 md:grid-cols-[0.72fr_1.28fr]"><div><Play className="h-8 w-8 text-accent" /><p className="mt-8 text-xs uppercase tracking-[0.25em] text-accent">Em destaque</p><h2 className="mt-4 text-5xl leading-none md:text-6xl">{video.title}</h2><p className="mt-6 leading-7 text-primary-foreground/65">{video.description}</p>{video.property && <p className="mt-6 text-sm">{video.property}</p>}</div><div className="aspect-video overflow-hidden"><iframe src={embed} title={video.title} loading="lazy" className="h-full w-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen /></div></div></section>
   );
 }
 
