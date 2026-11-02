@@ -1,17 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { newLeadSchema } from "@/lib/security-validation";
 
 const leadIdSchema = z.object({ leadId: z.string().uuid() });
-
-const newLeadSchema = z.object({
-  name: z.string().trim().min(1).max(200),
-  phone: z.string().trim().max(40).optional(),
-  email: z.string().trim().max(320).optional(),
-  message: z.string().trim().max(4000).optional(),
-  property_interest: z.string().trim().max(200).optional(),
-  source: z.string().trim().max(60).optional(),
-});
 
 /** Registra um lead do site e já envia ao CRM. Público (formulários do portal). */
 export const submitLead = createServerFn({ method: "POST" })
@@ -59,11 +51,13 @@ export const submitLead = createServerFn({ method: "POST" })
 
 /**
  * Envia um lead recém-criado para o CRM SmartFlow.
- * Público (chamado logo após o formulário), mas só lê o lead pelo id e nunca devolve dados sensíveis.
+ * Reenvio administrativo. O envio inicial continua dentro de submitLead.
  */
 export const syncLeadToCrm = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input) => leadIdSchema.parse(input))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
     const { postToCrm } = await import("@/lib/crm.server");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 

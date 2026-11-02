@@ -29,7 +29,7 @@ function NotFoundComponent() {
 }
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
-  console.error(error);
+  if (import.meta.env.DEV) console.error(error);
   const router = useRouter();
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -65,8 +65,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Letícia Souza Negócios Imobiliários | Imóveis em Tatuí-SP" },
       { name: "twitter:description", content: "Corretora especializada em casas, apartamentos, terrenos, condomínios e loteamentos em Tatuí-SP. Atendimento consultivo para morar, investir e construir patrimônio." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a0e26cb5-6510-42ec-add4-3d35fff02472/id-preview-ddf575ca--fe01cd60-3be5-40f9-ab6e-e00208b3fafe.lovable.app-1779819395973.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a0e26cb5-6510-42ec-add4-3d35fff02472/id-preview-ddf575ca--fe01cd60-3be5-40f9-ab6e-e00208b3fafe.lovable.app-1779819395973.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
